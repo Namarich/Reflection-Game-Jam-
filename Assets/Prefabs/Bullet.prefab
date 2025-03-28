@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38d4abcdac70cd5419060a8c7d3b7ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpeed: 6
-  speedReduction: 0.7
-  cam: {fileID: 0}
+  MaxSpeed: 10
+  speedReduction: 0.4
+  isFirstBounce: 1
 --- !u!58 &1918188013318903015
 CircleCollider2D:
   m_ObjectHideFlags: 0

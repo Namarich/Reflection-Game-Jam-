@@ -14,6 +14,8 @@ public class Ball : MonoBehaviour
 
     private Vector2 direction;
 
+    public bool isFirstBounce = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +45,11 @@ public class Ball : MonoBehaviour
     {
         Vector2 surfaceNormal = collision.contacts[0].normal;
         direction = Vector2.Reflect(direction, surfaceNormal);
-        speed *= speedReduction;
+        if (!isFirstBounce)
+        {
+            speed *= speedReduction;
+        }
+        isFirstBounce = false;
         Vector3 perpendicular = transform.position - (Vector3)direction;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular);
     }
@@ -55,6 +61,7 @@ public class Ball : MonoBehaviour
 
     public void ShootYourself(Vector2 _direction,Transform startPos)
     {
+        isFirstBounce = true;
         direction = _direction;
         wasPressed = true;
         speed = MaxSpeed;

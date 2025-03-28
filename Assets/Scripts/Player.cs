@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     public float smoothTime = 0.1f; // Adjust for smooth acceleration
     private Vector2 input;
     private Vector2 velocity = Vector2.zero;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
 
     public Camera cam;
 
@@ -39,11 +39,11 @@ public class Player : MonoBehaviour
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         input.Normalize(); // Prevent faster diagonal movement
 
-        if (Input.GetMouseButtonDown(0) && Time.time >= lastShotTime+shotSpeed)
+        if (Input.GetMouseButtonDown(0) && Time.time >= lastShotTime + shotSpeed)
         {
             Shoot();
         }
-        
+
         if (Time.time >= lastShotTime + shotSpeed)
         {
             trajectoryParent.SetActive(true);
@@ -53,8 +53,6 @@ public class Player : MonoBehaviour
         {
             trajectoryParent.SetActive(false);
         }
-
-        
         
     }
 
@@ -66,16 +64,28 @@ public class Player : MonoBehaviour
 
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         Vector3 perpendicular = transform.position - mousePos;
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular*-1);
+
+        Vector2 aimDirection = (Vector2)mousePos - rb.position;
+        float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg - 90f;
+        //transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular*-1);
+        rb.rotation = aimAngle;
+
     }
 
 
     public void Shoot()
     {
-        RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, transform.up); 
+        //Debug.DrawRay(shootPoint.position, shootPoint.up * 10, Color.green, 2f);
 
-        GameObject a = Instantiate(bullet, shootPoint.position, Quaternion.identity);
-        a.GetComponent<Ball>().ShootYourself(ray.point, shootPoint);
+
+
+        RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
+
+
+        Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
+
+        GameObject a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+        a.GetComponent<Ball>().ShootYourself((transform.position - shootPoint.position), shootPoint);
         lastShotTime = Time.time;
     }
 
@@ -84,7 +94,7 @@ public class Player : MonoBehaviour
         Vector3 perpendicular = shootPoint.position - transform.position;
         //Instantiate(trajectory, shootPoint.position, Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, transform.up);
-
+        
         float i = 1;
         while (Vector2.Distance(shootPoint.position, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing)) < Vector2.Distance(shootPoint.position, ray.point))
         {
@@ -93,9 +103,6 @@ public class Player : MonoBehaviour
             a.transform.parent = trajectoryParent.transform;
             i += 1;
         }
-
-
-
         
     }
 
@@ -105,23 +112,36 @@ public class Player : MonoBehaviour
         //Instantiate(trajectory, shootPoint.position, Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, transform.up);
 
-
+        //Debug.DrawRay(shootPoint.position, ray.point, Color.green);
         float i = 1;
         while (Vector2.Distance(shootPoint.position, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing)) < Vector2.Distance(shootPoint.position, ray.point))
         {
+            if (i > trajectoryList.Count)
+            {
+                GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
+                trajectoryList.Add(a);
+                a.transform.parent = trajectoryParent.transform;
+            }
             //GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
             trajectoryList[(int)i - 1].transform.position = shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing);
             trajectoryList[(int)i - 1].transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular * -1);
             i += 1;
         }
 
-        Vector2 dir = Vector2.Reflect(shootPoint.position, ray.normal);
-        for (float k = i; k < trajectoryList.Count+1; k++)
+        while (i - 1 < trajectoryList.Count)
         {
-            //Vector3 extended_vector = shootPoint.position * i * trajectorySpacing;
-            trajectoryList[(int)k - 1].transform.position = ray.point + dir * ((k - i) * trajectorySpacing);
-            perpendicular = trajectoryList[(int)k - 1].transform.position - (Vector3)dir;
-            trajectoryList[(int)k - 1].transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular);
+            GameObject b = trajectoryList[(int)i - 1];
+            trajectoryList.Remove(b);
+            Destroy(b);
+            i++;
         }
+
+    }
+
+    public void CreateDot(Vector3 perpendicular,int i)
+    {
+        GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
+        trajectoryList.Add(a);
+        a.transform.parent = trajectoryParent.transform;
     }
 }

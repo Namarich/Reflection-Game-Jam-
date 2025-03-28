@@ -723,8 +723,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Reflection(Game Jam)
-  metroPackageVersion: 
+  metroPackageName: ReflectionGameJam
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -732,7 +732,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Reflection(Game Jam)
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Reflection(Game Jam)
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
