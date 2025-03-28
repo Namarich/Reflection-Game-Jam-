@@ -112,6 +112,17 @@ public class Player : MonoBehaviour
         //Instantiate(trajectory, shootPoint.position, Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, transform.up);
 
+        float k = 1;
+        while (Vector2.Distance(shootPoint.position, shootPoint.position + gameObject.transform.up * ((k - 1) * trajectorySpacing)) > Vector2.Distance(shootPoint.position, ray.point))
+        {
+            GameObject b = trajectoryList[(int)k - 1];
+            trajectoryList.Remove(b);
+            Destroy(b);
+            k+=2;
+        }
+
+
+
         //Debug.DrawRay(shootPoint.position, ray.point, Color.green);
         float i = 1;
         while (Vector2.Distance(shootPoint.position, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing)) < Vector2.Distance(shootPoint.position, ray.point))
