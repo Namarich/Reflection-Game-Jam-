@@ -16,6 +16,14 @@ public class Ball : MonoBehaviour
 
     public bool isFirstBounce = true;
 
+    public Color originalColor;
+    public Color transparentColor;
+
+    public float damage;
+
+    public float lifeTime;
+    private float startOfLifeTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,25 +42,46 @@ public class Ball : MonoBehaviour
             //transform.right
         }
 
-        if (speed <= MaxSpeed * 0.1)
+        if (speed <= MaxSpeed * 0.1 || Time.time >= startOfLifeTime+lifeTime)
         {
             Reset();
         }
             
     }
 
+    private void Awake()
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = transparentColor;
+        startOfLifeTime = Time.time;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
+
+        if (collision.gameObject.tag == "Wall")
+        {
+            isFirstBounce = false;
+            speed *= speedReduction;
+        }
+        else if (collision.gameObject.tag == "Enemy" && !isFirstBounce)
+        {
+            speed *= collision.gameObject.GetComponent<Enemy>().bulletSpeedReduction;
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        }
         Vector2 surfaceNormal = collision.contacts[0].normal;
         direction = Vector2.Reflect(direction, surfaceNormal);
         if (!isFirstBounce)
         {
-            speed *= speedReduction;
+            gameObject.GetComponent<SpriteRenderer>().color = originalColor;
+
         }
-        isFirstBounce = false;
         Vector3 perpendicular = transform.position - (Vector3)direction;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular);
+
     }
+
+
+
 
     public void Reset()
     {

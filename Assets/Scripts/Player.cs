@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -27,10 +28,17 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject trajectoryParent;
     public int numOfDots;
 
+
+    public float maxHealth;
+    private float currentHealth;
+    public Color originalColor;
+    public Color damageColor;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         DrawTrajectory();
+        currentHealth = maxHealth;
     }
 
     void Update()
@@ -82,10 +90,10 @@ public class Player : MonoBehaviour
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
 
 
-        Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
+        //Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
 
         GameObject a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
-        a.GetComponent<Ball>().ShootYourself((transform.position - shootPoint.position), shootPoint);
+        a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint);
         lastShotTime = Time.time;
     }
 
@@ -105,6 +113,19 @@ public class Player : MonoBehaviour
         }
         
     }
+
+
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            collision.gameObject.GetComponent<Enemy>().Attack(gameObject.GetComponent<Player>());
+        }
+    }
+
+
+
 
     public void UpdateTrajectory()
     {
@@ -154,5 +175,23 @@ public class Player : MonoBehaviour
         GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
         trajectoryList.Add(a);
         a.transform.parent = trajectoryParent.transform;
+    }
+
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        StartCoroutine(ChangeColor());
+        if (currentHealth <= 0)
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+    }
+
+    IEnumerator ChangeColor()
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = damageColor;
+        yield return new WaitForSeconds(0.15f);
+        gameObject.GetComponent<SpriteRenderer>().color = originalColor;
     }
 }
