@@ -18,10 +18,16 @@ public class Abilities : MonoBehaviour
     private float effect;
     private bool isPercentageBased;
 
+    private float initialValue;
+
     public TMP_Text nameText;
     public TMP_Text effectText;
 
     public WaveManager waveMan;
+
+    public Animator anim;
+
+    public List<StatUI> stats;
 
 
     private void Update()
@@ -39,12 +45,12 @@ public class Abilities : MonoBehaviour
 
     public void ProjectileSpeedUp()
     {
-        player.projectileSpeed *= effect;
+        player.projectileSpeed = RoundUpTheFloat(effect * player.projectileSpeed);
     }
 
     public void ProjectileDamageUp()
     {
-        player.projectileDamage *= effect;
+        player.projectileDamage = RoundUpTheFloat(effect * player.projectileDamage);
     }
 
     public void PlayerHealthUp()
@@ -55,17 +61,18 @@ public class Abilities : MonoBehaviour
 
     public void ShotSpeedUp()
     {
-        player.shotSpeed /= effect;
+        player.shotSpeed = RoundUpTheFloat(RoundUpTheFloat(player.shotSpeed) * (2-effect));
     }
 
     public void ProjectileSpeedReduction()
     {
-        player.projectileSpeedReduction *= effect;
+        player.projectileSpeedReduction = RoundUpTheFloat(player.projectileSpeedReduction * effect);
     }
 
 
     public void UpdateAbilities()
     {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         switch (function)
         {
             case Function.PlayerSpeedUp:
@@ -73,6 +80,7 @@ public class Abilities : MonoBehaviour
                 effect = 1;
                 effectSign = "+";
                 isPercentageBased = false;
+                initialValue = player.moveSpeed;
                 break;
 
             case Function.ProjectileSpeedUp:
@@ -80,6 +88,7 @@ public class Abilities : MonoBehaviour
                 effect = 1.25f;
                 effectSign = "*";
                 isPercentageBased = true;
+                initialValue = player.projectileSpeed;
                 break;
 
             case Function.ProjectileDamageUp:
@@ -87,6 +96,7 @@ public class Abilities : MonoBehaviour
                 effect = 1.2f;
                 effectSign = "*";
                 isPercentageBased = true;
+                initialValue = player.projectileDamage;
                 break;
 
             case Function.PlayerHealthUp:
@@ -94,20 +104,23 @@ public class Abilities : MonoBehaviour
                 effect = 30;
                 effectSign = "+";
                 isPercentageBased = false;
+                initialValue = player.maxHealth;
                 break;
 
             case Function.ShotSpeedUp:
                 abilityName = "Shot SpeedUp";
-                effect = 1.1f;
+                effect = 1.15f;
                 effectSign = "/";
                 isPercentageBased = true;
+                initialValue = player.shotSpeed;
                 break;
 
             case Function.ProjectileSpeedReduction:
-                abilityName = "Projectile SpeedReductionDown";
+                abilityName = "Projectile Speed ReductionDown";
                 effect = 1.3f;
-                effectSign = "/";
+                effectSign = "*";
                 isPercentageBased = true;
+                initialValue = player.projectileSpeedReduction;
                 break;
         }
     }
@@ -182,7 +195,54 @@ public class Abilities : MonoBehaviour
                 waveMan.selectedAbilities.Remove(function.ToString());
             }
         }
-        
-        
+    }
+
+
+
+    public void Hover()
+    {
+        anim.Play("Button");
+        foreach (StatUI a in stats)
+        {
+            if (a.value == initialValue)
+            {
+                if (!isPercentageBased)
+                {
+                    a.UpdateAddedValue(effectSign+effect.ToString());
+                    break;
+                }
+                else
+                {
+                    if (effectSign == "/")
+                    {
+                        a.UpdateAddedValue($"-{RoundUpTheFloat(((effect - 1) * initialValue))}");
+                    }
+                    else
+                    {
+                        a.UpdateAddedValue($"+{RoundUpTheFloat(((effect - 1) * initialValue))}");
+                    }
+                    break;
+                    
+                }
+            }
+        }
+    }
+
+    public void Unhover()
+    {
+        anim.Play("ButtonBack");
+        foreach (StatUI a in stats)
+        {
+
+            a.DisableAddedValueText();
+
+        }
+    }
+
+    public float RoundUpTheFloat(float a)
+    {
+
+        //return Mathf.Round(a * 100.0f) * 0.01f;
+        return (float)System.Math.Round(a, 2);
     }
 }

@@ -35,7 +35,12 @@ public class WaveManager : MonoBehaviour
     public List<Abilities> abilities;
     public List<string> selectedAbilities;
 
-    private bool IsSelectionScreen;
+    public bool IsSelectionScreen;
+
+    public GameObject enemySpawnCircle;
+    public float enemyCircleDuration;
+
+    private bool startedSpawning;
    
 
 
@@ -45,30 +50,26 @@ public class WaveManager : MonoBehaviour
         lastTimeSpawned = 0;
         wave = 1;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        Spawn(enemy);
-        lastTimeSpawned = Time.time;
-        currentEnemiesSpawned += 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time >= timeBetweenSpawns + lastTimeSpawned && currentEnemiesSpawned < startEnemyNumber+(wave-1)*enemyNumberProgression && !selectionScreen.activeSelf)
+        if (Time.time >= timeBetweenSpawns + lastTimeSpawned - enemyCircleDuration && currentEnemiesSpawned < startEnemyNumber+(wave-1)*enemyNumberProgression && !selectionScreen.activeSelf && !startedSpawning)
         {
             Spawn(enemy);
-            lastTimeSpawned = Time.time;
-            currentEnemiesSpawned += 1;
         }
         else if (currentEnemiesSpawned >= startEnemyNumber + (wave - 1) * enemyNumberProgression && enemies.Count == 0 && !IsSelectionScreen)
         {
             StartCoroutine(WaitUntilSelectionScreen());
         }
-        Debug.Log($"wave:{wave}");
+        //Debug.Log($"wave:{wave}");
     }
 
 
     public void Spawn(GameObject enemy)
     {
+        startedSpawning = true;
         currentSpawnZoneWidth = spawnZoneWidth - enemy.GetComponent<SpriteRenderer>().bounds.extents.x;
         currentSpawnZoneHeight = spawnZoneHeight - enemy.GetComponent<SpriteRenderer>().bounds.extents.y;
         Vector2 spawnPos = new Vector2(Random.Range(currentSpawnZoneWidth*-1, currentSpawnZoneWidth), Random.Range(currentSpawnZoneHeight * -1, currentSpawnZoneHeight));
@@ -89,10 +90,23 @@ public class WaveManager : MonoBehaviour
             }
             spawnPos = new Vector2(Random.Range(currentSpawnZoneWidth * -1, currentSpawnZoneWidth), Random.Range(currentSpawnZoneHeight * -1, currentSpawnZoneHeight));
         }
+        StartCoroutine(SpawnEnemy(spawnPos));
+        
+    }
 
-        GameObject a = Instantiate(enemy,spawnPos,Quaternion.identity);
+
+
+    IEnumerator SpawnEnemy(Vector3 spawnPos)
+    {
+        GameObject b = Instantiate(enemySpawnCircle, spawnPos, Quaternion.identity);
+        yield return new WaitForSeconds(enemyCircleDuration);
+        Destroy(b);
+        GameObject a = Instantiate(enemy, spawnPos, Quaternion.identity);
         enemies.Add(a);
         a.GetComponent<Enemy>().waveMan = gameObject.GetComponent<WaveManager>();
+        currentEnemiesSpawned += 1;
+        lastTimeSpawned = Time.time;
+        startedSpawning = false;
     }
 
 
@@ -110,6 +124,7 @@ public class WaveManager : MonoBehaviour
 
     void SelectionScreen()
     {
+        player.gameObject.transform.position = transform.position;
         player.enabled = false;
         selectionScreen.SetActive(true);
 
