@@ -35,6 +35,8 @@ public class WaveManager : MonoBehaviour
     public List<Abilities> abilities;
     public List<string> selectedAbilities;
 
+    public List<string> cannotUseAbilities;
+
     public bool IsSelectionScreen;
 
     public GameObject enemySpawnCircle;

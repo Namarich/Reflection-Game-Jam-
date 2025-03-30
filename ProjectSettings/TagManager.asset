@@ -7,6 +7,8 @@ TagManager:
   - SpawnZone
   - Wall
   - Enemy
+  - WaveManager
+  - Bullet
   layers:
   - Default
   - TransparentFX

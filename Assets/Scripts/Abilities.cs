@@ -7,7 +7,7 @@ using TMPro;
 
 public class Abilities : MonoBehaviour
 {
-    private enum Function {PlayerSpeedUp, ProjectileSpeedUp, ProjectileDamageUp, PlayerHealthUp, ShotSpeedUp, ProjectileSpeedReduction};
+    private enum Function { PlayerSpeedUp, ProjectileSpeedUp, ProjectileDamageUp, PlayerHealthUp, ShotSpeedUp, ProjectileSpeedReduction, ExtraBullet, ChainReaction, Acceleration, ExplosiveImpact};
 
     private Function function;
 
@@ -29,6 +29,19 @@ public class Abilities : MonoBehaviour
 
     public List<StatUI> stats;
 
+    public List<GameObject> specialAbilities;
+
+    private string rarity;
+    public List<Color> colors;
+    public TMP_Text rarityText;
+
+    private void Start()
+    {
+        foreach (GameObject a in specialAbilities)
+        {
+            a.SetActive(false);
+        }
+    }
 
     private void Update()
     {
@@ -41,32 +54,68 @@ public class Abilities : MonoBehaviour
     public void PlayerSpeedUp()
     {
         player.moveSpeed += effect;
+        
     }
 
     public void ProjectileSpeedUp()
     {
         player.projectileSpeed = RoundUpTheFloat(effect * player.projectileSpeed);
+
     }
 
     public void ProjectileDamageUp()
     {
         player.projectileDamage = RoundUpTheFloat(effect * player.projectileDamage);
+
     }
 
     public void PlayerHealthUp()
     {
         player.maxHealth += effect;
         player.Heal(player.maxHealth);
+
     }
 
     public void ShotSpeedUp()
     {
-        player.shotSpeed = RoundUpTheFloat(RoundUpTheFloat(player.shotSpeed) * (2-effect));
+        player.shotSpeed = RoundUpTheFloat(RoundUpTheFloat(player.shotSpeed) * (2 - effect));
+
     }
 
     public void ProjectileSpeedReduction()
     {
         player.projectileSpeedReduction = RoundUpTheFloat(player.projectileSpeedReduction * effect);
+
+    }
+
+    public void ExtraBullet()
+    {
+        player.isExtraBullet = true;
+        waveMan.cannotUseAbilities.Add(function.ToString());
+        specialAbilities[0].SetActive(true);
+    }
+
+    public void Acceleration()
+    {
+        player.isDoublingSpeedBullet = true;
+        waveMan.cannotUseAbilities.Add(function.ToString());
+        specialAbilities[1].SetActive(true);
+    }
+
+
+    public void ChainReaction()
+    {
+        player.isChainReaction = true;
+        waveMan.cannotUseAbilities.Add(function.ToString());
+        specialAbilities[2].SetActive(true);
+    }
+
+
+    public void ExplosiveImpact()
+    {
+        player.isExplosiveImpact = true;
+        waveMan.cannotUseAbilities.Add(function.ToString());
+        specialAbilities[3].SetActive(true);
     }
 
 
@@ -81,6 +130,7 @@ public class Abilities : MonoBehaviour
                 effectSign = "+";
                 isPercentageBased = false;
                 initialValue = player.moveSpeed;
+                rarity = "Common";
                 break;
 
             case Function.ProjectileSpeedUp:
@@ -89,6 +139,7 @@ public class Abilities : MonoBehaviour
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileSpeed;
+                rarity = "Rare";
                 break;
 
             case Function.ProjectileDamageUp:
@@ -97,6 +148,7 @@ public class Abilities : MonoBehaviour
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileDamage;
+                rarity = "Common";
                 break;
 
             case Function.PlayerHealthUp:
@@ -105,6 +157,7 @@ public class Abilities : MonoBehaviour
                 effectSign = "+";
                 isPercentageBased = false;
                 initialValue = player.maxHealth;
+                rarity = "Common";
                 break;
 
             case Function.ShotSpeedUp:
@@ -113,6 +166,7 @@ public class Abilities : MonoBehaviour
                 effectSign = "/";
                 isPercentageBased = true;
                 initialValue = player.shotSpeed;
+                rarity = "Rare";
                 break;
 
             case Function.ProjectileSpeedReduction:
@@ -121,6 +175,43 @@ public class Abilities : MonoBehaviour
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileSpeedReduction;
+                rarity = "Common";
+                break;
+
+            case Function.ExtraBullet:
+                abilityName = "Extra Bullet";
+                effect = 0;
+                effectSign = "+ 1 bullet";
+                isPercentageBased = false;
+                initialValue = 0;
+                rarity = "Rare";
+                break;
+
+            case Function.Acceleration:
+                abilityName = "Acceleration";
+                effect = 0;
+                effectSign = "Every 2 collisions double the move speed of a bullet";
+                isPercentageBased = false;
+                initialValue = 0;
+                rarity = "Epic";
+                break;
+
+            case Function.ChainReaction:
+                abilityName = "ChainReaction";
+                effect = 0;
+                effectSign = "Bullet also deals 50% damage to a random enemy";
+                isPercentageBased = false;
+                initialValue = 0;
+                rarity = "Epic";
+                break;
+
+            case Function.ExplosiveImpact:
+                abilityName = "ExplosiveImpact";
+                effect = 0;
+                effectSign = "If 2 activated bullets collide, they produce an explosion, which deals 2x damage";
+                isPercentageBased = false;
+                initialValue = 0;
+                rarity = "Epic";
                 break;
         }
     }
@@ -152,6 +243,22 @@ public class Abilities : MonoBehaviour
             case Function.ProjectileSpeedReduction:
                 ProjectileSpeedReduction();
                 break;
+
+            case Function.ExtraBullet:
+                ExtraBullet();
+                break;
+
+            case Function.Acceleration:
+                Acceleration();
+                break;
+
+            case Function.ChainReaction:
+                ChainReaction();
+                break;
+
+            case Function.ExplosiveImpact:
+                ExplosiveImpact();
+                break;
         }
         waveMan.NextWave();
     }
@@ -159,7 +266,7 @@ public class Abilities : MonoBehaviour
     public void TakeRandomEnum()
     {
         function = (Function)Random.Range(0, Function.GetValues(typeof(Function)).Length);
-        while (waveMan.selectedAbilities.Contains(function.ToString()))
+        while (waveMan.selectedAbilities.Contains(function.ToString()) || waveMan.cannotUseAbilities.Contains(function.ToString()))
         {
             function = (Function)Random.Range(0, Function.GetValues(typeof(Function)).Length);
         }
@@ -176,15 +283,58 @@ public class Abilities : MonoBehaviour
             {
                 effectText.text = "+" + ((effect - 1) * 100).ToString() + "%";
             }
-            
+
         }
         else
         {
-            effectText.text = effectSign + effect.ToString();
+            if (effect != 0)
+            {
+                effectText.text = effectSign + effect.ToString();
+            }
+            else
+            {
+                effectText.text = effectSign;
+            }
+
         }
-        
-        
+
+        rarityText.text = rarity;
+        if (rarity == "Common")
+        {
+            rarityText.color = colors[0];
+        }
+        else if (rarity == "Rare")
+        {
+            rarityText.color = colors[1];
+            if (Random.Range(0,1) > 0.7f)
+            {
+                TakeRandomEnum();
+            }
+        }
+        else if (rarity == "Epic")
+        {
+            rarityText.color = colors[2];
+            if (Random.Range(0, 1) > 0.5f)
+            {
+                TakeRandomEnum();
+            }
+        }
+        else if (rarity == "Legendary")
+        {
+            rarityText.color = colors[3];
+            if (Random.Range(0, 1) > 0.3f)
+            {
+                TakeRandomEnum();
+            }
+        }
+
+
     }
+
+        
+        
+        
+    
 
     public void RemoveMyselfFromList()
     {

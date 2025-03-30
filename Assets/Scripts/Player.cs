@@ -41,6 +41,16 @@ public class Player : MonoBehaviour
     public float projectileSpeedReduction;
     public float projectileLifeTime;
 
+    public bool isExtraBullet;
+
+    public bool isDoublingSpeedBullet;
+
+    public bool isChainReaction;
+
+    public bool canMove = true;
+
+    public bool isExplosiveImpact;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -56,7 +66,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && Time.time >= lastShotTime + shotSpeed)
         {
-            Shoot();
+            StartCoroutine(Shoot());
         }
 
         if (Time.time >= lastShotTime + shotSpeed)
@@ -75,7 +85,11 @@ public class Player : MonoBehaviour
     {
         // Smooth movement using SmoothDamp
         Vector2 targetVelocity = input * moveSpeed;
-        rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, smoothTime);
+        if (canMove)
+        {
+            rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, smoothTime);
+        }
+        
 
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         Vector3 perpendicular = transform.position - mousePos;
@@ -88,18 +102,26 @@ public class Player : MonoBehaviour
     }
 
 
-    public void Shoot()
+    public IEnumerator Shoot()
     {
         //Debug.DrawRay(shootPoint.position, shootPoint.up * 10, Color.green, 2f);
 
 
-
+        
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
         //Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
 
         GameObject a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
-        a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint,projectileSpeed,projectileLifeTime,projectileDamage, projectileSpeedReduction);
+        a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint.position,projectileSpeed,projectileLifeTime,projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
         lastShotTime = Time.time;
+        if (isExtraBullet)
+        {
+            yield return new WaitForSeconds(0.15f);
+            ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
+            a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+            a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
+        }
+        yield return new WaitForSeconds(0);
     }
 
     public void DrawTrajectory()
