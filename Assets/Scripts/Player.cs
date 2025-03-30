@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private Transform shootPoint;
 
-    [SerializeField] private float shotSpeed;
+    public float shotSpeed;
     private float lastShotTime;
 
     public GameObject trajectory;
@@ -33,6 +33,13 @@ public class Player : MonoBehaviour
     private float currentHealth;
     public Color originalColor;
     public Color damageColor;
+
+
+
+    public float projectileSpeed;
+    public float projectileDamage;
+    public float projectileSpeedReduction;
+    public float projectileLifeTime;
 
     void Start()
     {
@@ -88,12 +95,10 @@ public class Player : MonoBehaviour
 
 
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
-
-
         //Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
 
         GameObject a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
-        a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint);
+        a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint,projectileSpeed,projectileLifeTime,projectileDamage, projectileSpeedReduction);
         lastShotTime = Time.time;
     }
 
@@ -193,5 +198,14 @@ public class Player : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().color = damageColor;
         yield return new WaitForSeconds(0.15f);
         gameObject.GetComponent<SpriteRenderer>().color = originalColor;
+    }
+
+    public void Heal(float hp)
+    {
+        currentHealth += hp;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
     }
 }

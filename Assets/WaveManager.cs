@@ -5,6 +5,8 @@ using UnityEngine;
 public class WaveManager : MonoBehaviour
 {
 
+    private Player player;
+
     public int wave;
     public int startEnemyNumber;
     public int enemyNumberProgression;
@@ -13,6 +15,7 @@ public class WaveManager : MonoBehaviour
 
 
     public GameObject enemy;
+    public List<GameObject> enemies;
 
     public float timeBetweenSpawns;
     private float lastTimeSpawned;
@@ -25,6 +28,12 @@ public class WaveManager : MonoBehaviour
 
 
     public List<GameObject> zones;
+
+
+    public GameObject selectionScreen;
+
+    public List<Abilities> abilities;
+    public List<string> selectedAbilities;
    
 
 
@@ -33,20 +42,24 @@ public class WaveManager : MonoBehaviour
     {
         lastTimeSpawned = 0;
         wave = 1;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        Spawn(enemy);
+        lastTimeSpawned = Time.time;
+        currentEnemiesSpawned += 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time >= timeBetweenSpawns + lastTimeSpawned && currentEnemiesSpawned < startEnemyNumber+(wave-1)*enemyNumberProgression)
+        if (Time.time >= timeBetweenSpawns + lastTimeSpawned && currentEnemiesSpawned < startEnemyNumber+(wave-1)*enemyNumberProgression && !selectionScreen.activeSelf)
         {
             Spawn(enemy);
             lastTimeSpawned = Time.time;
             currentEnemiesSpawned += 1;
         }
-        else if (currentEnemiesSpawned >= startEnemyNumber + (wave - 1) * enemyNumberProgression)
+        else if (currentEnemiesSpawned >= startEnemyNumber + (wave - 1) * enemyNumberProgression && enemies.Count == 0 && !selectionScreen.activeSelf)
         {
-            StartCoroutine(NextWave());
+            SelectionScreen();
         }
         Debug.Log($"wave:{wave}");
     }
@@ -76,14 +89,35 @@ public class WaveManager : MonoBehaviour
         }
 
         GameObject a = Instantiate(enemy,spawnPos,Quaternion.identity);
+        enemies.Add(a);
+        a.GetComponent<Enemy>().waveMan = gameObject.GetComponent<WaveManager>();
     }
 
 
-    IEnumerator NextWave()
+
+    public void NextWave()
     {
+        player.enabled = true;
+        selectionScreen.SetActive(false);
         currentEnemiesSpawned = 0;
         wave += 1;
-        yield return new WaitForSeconds(5f);
         lastTimeSpawned = 0;
+    }
+
+
+    void SelectionScreen()
+    {
+        player.enabled = false;
+        selectionScreen.SetActive(true);
+
+        foreach (Abilities a in abilities)
+        {
+            a.RemoveMyselfFromList();
+        }
+
+        foreach (Abilities a in abilities)
+        {
+            a.TakeRandomEnum();
+        }
     }
 }

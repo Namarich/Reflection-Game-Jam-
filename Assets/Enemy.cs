@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-
+    public WaveManager waveMan;
     private Transform playerTransform;
 
     public float speed;
@@ -54,6 +54,7 @@ public class Enemy : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            waveMan.enemies.Remove(gameObject);
             Destroy(gameObject);
         }
     }

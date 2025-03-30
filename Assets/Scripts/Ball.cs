@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-
-    public float MaxSpeed;
+    private float MaxSpeed;
     private float speed;
 
     private bool wasPressed;
 
-    public float speedReduction;
+    private float speedReduction;
 
     private Vector2 direction;
 
@@ -19,9 +18,9 @@ public class Ball : MonoBehaviour
     public Color originalColor;
     public Color transparentColor;
 
-    public float damage;
+    private float damage;
 
-    public float lifeTime;
+    private float lifeTime;
     private float startOfLifeTime;
 
     // Start is called before the first frame update
@@ -88,14 +87,19 @@ public class Ball : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void ShootYourself(Vector2 _direction,Transform startPos)
+    public void ShootYourself(Vector2 _direction,Transform startPos,float _speed,float _lifeTime,float _damage, float _speedReduction)
     {
+        MaxSpeed = _speed;
         isFirstBounce = true;
         direction = _direction;
         wasPressed = true;
+        damage = _damage;
+        speedReduction = _speedReduction;
         speed = MaxSpeed;
         Vector3 perpendicular = startPos.position - (Vector3)direction;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular * -1);
+        lifeTime = _lifeTime;
+        
 
     }
 }
