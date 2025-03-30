@@ -175,10 +175,14 @@ public class Abilities : MonoBehaviour
 
     public void RemoveMyselfFromList()
     {
-        if (waveMan.selectedAbilities.Contains(function.ToString()))
+        if (function.ToString() != "")
         {
-            waveMan.selectedAbilities.Remove(function.ToString());
+            if (waveMan.selectedAbilities.Contains(function.ToString()))
+            {
+                waveMan.selectedAbilities.Remove(function.ToString());
+            }
         }
+        
         
     }
 }

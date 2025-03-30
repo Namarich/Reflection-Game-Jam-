@@ -34,6 +34,8 @@ public class WaveManager : MonoBehaviour
 
     public List<Abilities> abilities;
     public List<string> selectedAbilities;
+
+    private bool IsSelectionScreen;
    
 
 
@@ -57,9 +59,9 @@ public class WaveManager : MonoBehaviour
             lastTimeSpawned = Time.time;
             currentEnemiesSpawned += 1;
         }
-        else if (currentEnemiesSpawned >= startEnemyNumber + (wave - 1) * enemyNumberProgression && enemies.Count == 0 && !selectionScreen.activeSelf)
+        else if (currentEnemiesSpawned >= startEnemyNumber + (wave - 1) * enemyNumberProgression && enemies.Count == 0 && !IsSelectionScreen)
         {
-            SelectionScreen();
+            StartCoroutine(WaitUntilSelectionScreen());
         }
         Debug.Log($"wave:{wave}");
     }
@@ -102,6 +104,7 @@ public class WaveManager : MonoBehaviour
         currentEnemiesSpawned = 0;
         wave += 1;
         lastTimeSpawned = 0;
+        IsSelectionScreen = false;
     }
 
 
@@ -119,5 +122,12 @@ public class WaveManager : MonoBehaviour
         {
             a.TakeRandomEnum();
         }
+    }
+
+    IEnumerator WaitUntilSelectionScreen()
+    {
+        IsSelectionScreen = true;
+        yield return new WaitForSeconds(1f);
+        SelectionScreen();
     }
 }

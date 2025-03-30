@@ -43,8 +43,16 @@ public class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         transform.position = Vector3.MoveTowards(transform.position,playerTransform.position,speed);
-        Vector3 dir = (playerTransform.position - transform.position).normalized;
-        transform.rotation = Quaternion.LookRotation(Vector3.forward,dir);
+        //Vector3 dir = (playerTransform.position - transform.position).normalized;
+        //transform.rotation = Quaternion.LookRotation(Vector3.forward,dir);
+        if (transform.position.x < playerTransform.position.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else  if (transform.position.x >= playerTransform.position.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
     }
 
     public void TakeDamage(float damage)
@@ -52,11 +60,6 @@ public class Enemy : MonoBehaviour
         currentHealth -= damage;
         StartCoroutine(ChangeColor());
 
-        if (currentHealth <= 0)
-        {
-            waveMan.enemies.Remove(gameObject);
-            Destroy(gameObject);
-        }
     }
 
 
@@ -76,6 +79,11 @@ public class Enemy : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().color = damageColor;
         yield return new WaitForSeconds(0.15f);
         gameObject.GetComponent<SpriteRenderer>().color = originalColor;
+        if (currentHealth <= 0)
+        {
+            waveMan.enemies.Remove(gameObject);
+            Destroy(gameObject);
+        }
     }
 
 
