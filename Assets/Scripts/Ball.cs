@@ -93,11 +93,12 @@ public class Ball : MonoBehaviour
 
         if (collision.gameObject.tag == "Bullet" && !isFirstBounce && !collision.gameObject.GetComponent<Ball>().isFirstBounce && isExplosiveImpact)
         {
+            Destroy(collision.gameObject);
             GameObject a = Instantiate(explosion, transform.position, Quaternion.identity);
             a.GetComponent<ExplosionObject>().explosionDamage = damage * 2;
-            Destroy(collision.gameObject);
             Destroy(gameObject);
         }
+
         Vector2 surfaceNormal = collision.contacts[0].normal;
         direction = Vector2.Reflect(direction, surfaceNormal);
         if (!isFirstBounce)

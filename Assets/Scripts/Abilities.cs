@@ -197,7 +197,7 @@ public class Abilities : MonoBehaviour
                 break;
 
             case Function.ChainReaction:
-                abilityName = "ChainReaction";
+                abilityName = "Chain Reaction";
                 effect = 0;
                 effectSign = "Bullet also deals 50% damage to a random enemy";
                 isPercentageBased = false;
@@ -206,7 +206,7 @@ public class Abilities : MonoBehaviour
                 break;
 
             case Function.ExplosiveImpact:
-                abilityName = "ExplosiveImpact";
+                abilityName = "Explosive Impact";
                 effect = 0;
                 effectSign = "If 2 activated bullets collide, they produce an explosion, which deals 2x damage";
                 isPercentageBased = false;
