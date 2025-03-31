@@ -60,6 +60,8 @@ public class Player : MonoBehaviour
     public Color maxColor;
     public Color minColor;
 
+    public Animator playerDamageAnim;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -135,12 +137,14 @@ public class Player : MonoBehaviour
         GameObject a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
         a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint.position,projectileSpeed,projectileLifeTime,projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
         lastShotTime = Time.time;
+        GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>().projectiles.Add(a);
         if (isExtraBullet)
         {
             yield return new WaitForSeconds(0.15f);
             ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
             a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
             a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
+            GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>().projectiles.Add(a);
         }
         yield return new WaitForSeconds(0);
     }
@@ -232,15 +236,15 @@ public class Player : MonoBehaviour
         StartCoroutine(ChangeColor());
         if (currentHealth <= 0)
         {
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene("Menu");
         }
     }
 
     IEnumerator ChangeColor()
     {
-        gameObject.GetComponent<SpriteRenderer>().color = damageColor;
-        yield return new WaitForSeconds(0.15f);
-        gameObject.GetComponent<SpriteRenderer>().color = originalColor;
+        playerDamageAnim.SetBool("wasPlayerDamaged", true);
+        yield return new WaitForSeconds(0.01f);
+        playerDamageAnim.SetBool("wasPlayerDamaged", false);
     }
 
     public void Heal(float hp)

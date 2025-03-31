@@ -260,7 +260,7 @@ public class Abilities : MonoBehaviour
                 ExplosiveImpact();
                 break;
         }
-        waveMan.NextWave();
+        waveMan.EnemyInfoScreen();
     }
 
     public void TakeRandomEnum()
@@ -376,6 +376,10 @@ public class Abilities : MonoBehaviour
                 }
             }
         }
+        if (waveMan.isTutorial)
+        {
+            waveMan.tutorialPanel.SetActive(false);
+        }
     }
 
     public void Unhover()
@@ -386,6 +390,11 @@ public class Abilities : MonoBehaviour
 
             a.DisableAddedValueText();
 
+        }
+
+        if (waveMan.isTutorial)
+        {
+            waveMan.tutorialPanel.SetActive(true);
         }
     }
 

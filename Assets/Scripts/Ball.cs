@@ -101,7 +101,7 @@ public class Ball : MonoBehaviour
                     if (wav.enemies.Count > 1)
                     {
                         GameObject a = wav.enemies[Random.Range(0, wav.enemies.Count)];
-                        while (a == collision.gameObject)
+                        while (a == collision.gameObject || !a.GetComponent<Enemy>().enabled)
                         {
                             a = wav.enemies[Random.Range(0, wav.enemies.Count)];
                         }
