@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class Player : MonoBehaviour
 
 
     public float maxHealth;
-    private float currentHealth;
+    public float currentHealth;
     public Color originalColor;
     public Color damageColor;
 
@@ -50,6 +51,14 @@ public class Player : MonoBehaviour
     public bool canMove = true;
 
     public bool isExplosiveImpact;
+
+
+    public Image ammoUI;
+    public Image healthBar;
+    float lerpSpeed;
+
+    public Color maxColor;
+    public Color minColor;
 
     void Start()
     {
@@ -78,7 +87,19 @@ public class Player : MonoBehaviour
         {
             trajectoryParent.SetActive(false);
         }
-        
+
+        ammoUI.fillAmount = (Time.time - lastShotTime) / shotSpeed;
+        FillTheHealthBar();
+    }
+
+
+    public void FillTheHealthBar()
+    {
+        lerpSpeed = 3f * Time.deltaTime;
+        healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount,currentHealth/maxHealth,lerpSpeed);
+
+        Color healthColor = Color.Lerp(maxColor, minColor, currentHealth / maxHealth);
+        healthBar.color = healthColor;
     }
 
     void FixedUpdate()

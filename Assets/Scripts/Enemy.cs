@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Enemy : MonoBehaviour
 {
@@ -21,6 +22,22 @@ public class Enemy : MonoBehaviour
     public float attackSpeed;
     public float lastTimeAttacked = 0;
 
+    public GameObject damagePopup;
+    public Color bigDamage;
+    public Color smallDamage;
+
+    public bool hasShield;
+    public BoxCollider2D shieldCollider;
+
+    public bool isSpawning;
+    public GameObject spawnObject;
+    public int spawnObjectNumber;
+
+    public bool isRanged;
+    public GameObject bullet;
+    public float bulletSpeed;
+    public Transform shootPoint;
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +54,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Time.time >= attackSpeed + lastTimeAttacked && isRanged)
+        {
+            Shoot();
+            lastTimeAttacked = Time.time;
+        }
     }
 
     private void FixedUpdate()
@@ -47,21 +68,31 @@ public class Enemy : MonoBehaviour
         //transform.rotation = Quaternion.LookRotation(Vector3.forward,dir);
         if (transform.position.x < playerTransform.position.x)
         {
-            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            //gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            gameObject.transform.eulerAngles = new Vector3(0, 0, 0);
         }
         else  if (transform.position.x >= playerTransform.position.x)
         {
-            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            //gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            gameObject.transform.eulerAngles = new Vector3(0, 180, 0);
         }
     }
 
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
+        DamagePopup(damage);
         StartCoroutine(ChangeColor());
 
     }
 
+
+    public void DamagePopup(float damage)
+    {
+        GameObject a = Instantiate(damagePopup, transform.position, Quaternion.identity);
+        a.GetComponent<TMP_Text>().color = Color.Lerp(smallDamage, bigDamage, damage / maxHealth);
+        a.GetComponent<TMP_Text>().text = damage.ToString();
+    }
 
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -81,9 +112,32 @@ public class Enemy : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().color = originalColor;
         if (currentHealth <= 0)
         {
-            waveMan.enemies.Remove(gameObject);
-            Destroy(gameObject);
+            if (isSpawning)
+            {
+                StartCoroutine(Spawn());
+            }
+            else
+            {
+                waveMan.enemies.Remove(gameObject);
+                Destroy(gameObject);
+            }
+            
         }
+    }
+
+
+    public IEnumerator Spawn()
+    {
+        for (int i = 0; i < spawnObjectNumber;i++)
+        {
+            GameObject a = Instantiate(spawnObject, transform.position + new Vector3(Random.Range(-3f,3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
+            waveMan.enemies.Add(a);
+            a.GetComponent<Enemy>().waveMan = waveMan;
+            a.GetComponent<Enemy>().speed = Random.Range(a.GetComponent<Enemy>().speed*0.85f, a.GetComponent<Enemy>().speed*1.15f);
+            yield return new WaitForSeconds(0.1f);
+        }
+        waveMan.enemies.Remove(gameObject);
+        Destroy(gameObject);
     }
 
 
@@ -95,6 +149,17 @@ public class Enemy : MonoBehaviour
             player.TakeDamage(damage);
             lastTimeAttacked = Time.time;
         }
+        
+    }
+
+    public void Shoot()
+    {
+
+        RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, ((shootPoint.position - playerTransform.position) * -1).normalized);
+        Debug.DrawRay(shootPoint.position, (shootPoint.position - playerTransform.position) * -1, Color.green,3f);
+
+        GameObject a = Instantiate(bullet, shootPoint.position, Quaternion.identity);
+        a.GetComponent<Ball>().ShootYourself((shootPoint.position - playerTransform.position) * -1, shootPoint.position, bulletSpeed, 2f, damage, 0.6f, false, false,false);
         
     }
 }

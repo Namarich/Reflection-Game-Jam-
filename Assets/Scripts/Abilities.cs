@@ -184,16 +184,16 @@ public class Abilities : MonoBehaviour
                 effectSign = "+ 1 bullet";
                 isPercentageBased = false;
                 initialValue = 0;
-                rarity = "Rare";
+                rarity = "Epic";
                 break;
 
             case Function.Acceleration:
                 abilityName = "Acceleration";
                 effect = 0;
-                effectSign = "Every 2 collisions double the move speed of a bullet";
+                effectSign = "Every 2 reflections double the move speed of a bullet";
                 isPercentageBased = false;
                 initialValue = 0;
-                rarity = "Epic";
+                rarity = "Rare";
                 break;
 
             case Function.ChainReaction:
@@ -208,7 +208,7 @@ public class Abilities : MonoBehaviour
             case Function.ExplosiveImpact:
                 abilityName = "Explosive Impact";
                 effect = 0;
-                effectSign = "If 2 activated bullets collide, they produce an explosion, which deals 2x damage";
+                effectSign = "If 2 bullets collide, they produce an explosion, which deals 2x damage";
                 isPercentageBased = false;
                 initialValue = 0;
                 rarity = "Epic";
@@ -354,7 +354,7 @@ public class Abilities : MonoBehaviour
         anim.Play("Button");
         foreach (StatUI a in stats)
         {
-            if (a.value == initialValue)
+            if (a.value == initialValue && initialValue != 0)
             {
                 if (!isPercentageBased)
                 {

@@ -32,6 +32,10 @@ public class Ball : MonoBehaviour
 
     public bool isExplosiveImpact;
 
+    public float whoDiesFirst;
+
+    public bool canHurtThePlayer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,44 +63,84 @@ public class Ball : MonoBehaviour
 
     private void Awake()
     {
-        gameObject.GetComponent<SpriteRenderer>().color = transparentColor;
+        if (!canHurtThePlayer)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = transparentColor;
+        }
+        
         startOfLifeTime = Time.time;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
+        if (canHurtThePlayer)
+        {
+            isFirstBounce = false;
+        }
+
         if (collision.gameObject.tag == "Wall")
         {
             isFirstBounce = false;
             speed *= speedReduction;
-        }
-        else if (collision.gameObject.tag == "Enemy" && !isFirstBounce)
-        {
-            speed *= collision.gameObject.GetComponent<Enemy>().bulletSpeedReduction;
-            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
-            if (isChainReaction)
+            collisionCount += 1;
+            if (collisionCount % 2 == 0 && isDoublingSpeedBullet)
             {
-                WaveManager wav = GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>();
-                if (wav.enemies.Count > 1)
-                {
-                    GameObject a = wav.enemies[Random.Range(0, wav.enemies.Count)];
-                    while (a == collision.gameObject)
-                    {
-                        a = wav.enemies[Random.Range(0, wav.enemies.Count)];
-                    }
-                    a.GetComponent<Enemy>().TakeDamage(damage / 2);
-                }
-                
+                speed *= 2;
             }
         }
-
-        if (collision.gameObject.tag == "Bullet" && !isFirstBounce && !collision.gameObject.GetComponent<Ball>().isFirstBounce && isExplosiveImpact)
+        else if (collision.gameObject.tag == "Enemy" && !isFirstBounce && !canHurtThePlayer)
         {
-            Destroy(collision.gameObject);
+            if (!collision.gameObject.GetComponent<Enemy>().hasShield || collision.gameObject.GetComponent<Enemy>().shieldCollider != collision.collider)
+            {
+                speed *= collision.gameObject.GetComponent<Enemy>().bulletSpeedReduction;
+                collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+                if (isChainReaction)
+                {
+                    WaveManager wav = GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>();
+                    if (wav.enemies.Count > 1)
+                    {
+                        GameObject a = wav.enemies[Random.Range(0, wav.enemies.Count)];
+                        while (a == collision.gameObject)
+                        {
+                            a = wav.enemies[Random.Range(0, wav.enemies.Count)];
+                        }
+                        a.GetComponent<Enemy>().TakeDamage(damage / 2);
+                    }
+
+                }
+            }
+            else
+            {
+                speed *= speedReduction;
+            }
+            
+        }
+
+        if (collision.gameObject.tag == "Bullet" && isExplosiveImpact)
+        {
+            whoDiesFirst = Random.Range(1, 101);
+            while (whoDiesFirst == collision.gameObject.GetComponent<Ball>().whoDiesFirst)
+            {
+                whoDiesFirst = Random.Range(1, 101);
+            }
+            if (whoDiesFirst > collision.gameObject.GetComponent<Ball>().whoDiesFirst)
+            {
+                Destroy(collision.gameObject);
+            }
+            else
+            {
+                return;
+            }
             GameObject a = Instantiate(explosion, transform.position, Quaternion.identity);
             a.GetComponent<ExplosionObject>().explosionDamage = damage * 2;
             Destroy(gameObject);
+        }
+
+        if (collision.gameObject.tag == "Player" && canHurtThePlayer)
+        {
+            speed *= speedReduction;
+            collision.gameObject.GetComponent<Player>().TakeDamage(damage);
         }
 
         Vector2 surfaceNormal = collision.contacts[0].normal;
@@ -108,11 +152,7 @@ public class Ball : MonoBehaviour
         }
         Vector3 perpendicular = transform.position - (Vector3)direction;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular);
-        collisionCount += 1;
-        if (collisionCount % 2 == 0 && isDoublingSpeedBullet)
-        {
-            speed *= 2;
-        }
+        
 
     }
 

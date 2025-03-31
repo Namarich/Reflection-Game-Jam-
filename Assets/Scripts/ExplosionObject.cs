@@ -70,15 +70,23 @@ public class ExplosionObject : MonoBehaviour
     {
         collision.gameObject.GetComponent<Player>().canMove = false;
         yield return new WaitForSeconds(disableTime);
-        collision.gameObject.GetComponent<Player>().canMove = true;
+        if (collision.gameObject)
+        {
+            collision.gameObject.GetComponent<Player>().canMove = true;
+        }
+        
     }
 
     IEnumerator DisableEnemy(Collider2D collision)
     {
         collision.gameObject.GetComponent<Enemy>().enabled = false;
         yield return new WaitForSeconds(disableTime);
-        collision.gameObject.GetComponent<Enemy>().enabled = true;
-        collision.gameObject.GetComponent<Rigidbody2D>().freezeRotation = true;
-        collision.gameObject.GetComponent<Rigidbody2D>().constraints = enemyDefaultContraints;
+        if (collision.gameObject)
+        {
+            collision.gameObject.GetComponent<Enemy>().enabled = true;
+            collision.gameObject.GetComponent<Rigidbody2D>().freezeRotation = true;
+            collision.gameObject.GetComponent<Rigidbody2D>().constraints = enemyDefaultContraints;
+        }
+        
     }
 }
