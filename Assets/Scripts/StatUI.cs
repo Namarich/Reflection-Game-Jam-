@@ -25,7 +25,6 @@ public class StatUI : MonoBehaviour
     public TMP_Text addedValue;
     public GameObject addedValueText;
 
-    private bool haveFoundTheValue = false;
 
 
     // Update is called once per frame
@@ -62,7 +61,7 @@ public class StatUI : MonoBehaviour
                 value = player.moveSpeed;
                 break;
             case Stats.projectileSpeedReduction:
-                value = player.projectileSpeedReduction;
+                value = player.projectileSize;
                 break;
         }
         //DisableAddedValueText();

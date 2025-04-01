@@ -99,11 +99,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38d4abcdac70cd5419060a8c7d3b7ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speedReduction: 0.65
   isFirstBounce: 1
   originalColor: {r: 1, g: 1, b: 1, a: 1}
   transparentColor: {r: 0, g: 0, b: 0, a: 1}
   isChainReaction: 0
   explosion: {fileID: 5884457134273996261, guid: 21ff8a6cdc7ad79498309f7fb7005b94, type: 3}
+  miniExplosion: {fileID: 0}
   isExplosiveImpact: 0
   whoDiesFirst: 0
   canHurtThePlayer: 0

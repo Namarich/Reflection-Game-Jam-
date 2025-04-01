@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2573604459473586474}
   - component: {fileID: 2449732329538750668}
   - component: {fileID: 711769930284416884}
+  - component: {fileID: 3179665666822951656}
   m_Layer: 6
   m_Name: ShieldGhost
   m_TagString: Enemy
@@ -105,6 +106,7 @@ MonoBehaviour:
   maxHealth: 45
   originalColor: {r: 1, g: 1, b: 1, a: 1}
   damageColor: {r: 1, g: 0.10849059, b: 0.10849059, a: 1}
+  deadColor: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 0.78039217}
   bulletSpeedReduction: 0.2
   damage: 5
   attackSpeed: 1
@@ -114,6 +116,14 @@ MonoBehaviour:
   smallDamage: {r: 0.9433962, g: 0.47383496, b: 0.04004982, a: 1}
   hasShield: 1
   shieldCollider: {fileID: 2573604459473586474}
+  isSpawning: 0
+  spawnObject: {fileID: 0}
+  spawnObjectNumber: 0
+  isRanged: 0
+  bullet: {fileID: 0}
+  bulletSpeed: 0
+  shootPoint: {fileID: 0}
+  noContraints: 0
 --- !u!61 &2573604459473586474
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -231,3 +241,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 8, y: 3.8883646}
   m_EdgeRadius: 0
+--- !u!95 &3179665666822951656
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7679547953770141487}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e57054bb9ab3192419bdf5e4a22e85b2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

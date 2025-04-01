@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
 
     public float projectileSpeed;
     public float projectileDamage;
-    public float projectileSpeedReduction;
+    public float projectileSize;
     public float projectileLifeTime;
 
     public bool isExtraBullet;
@@ -63,11 +63,16 @@ public class Player : MonoBehaviour
 
     public GameObject miniExplosion;
 
+    private WaveManager wav;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        DrawTrajectory();
+        
+        
         currentHealth = maxHealth;
+        wav = GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>();
+        //DrawTrajectory();
     }
 
     void Update()
@@ -129,31 +134,43 @@ public class Player : MonoBehaviour
     public IEnumerator Shoot()
     {
         //Debug.DrawRay(shootPoint.position, shootPoint.up * 10, Color.green, 2f);
-
-
         
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
         //Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
 
-        GameObject a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
-        a.GetComponent<Ball>().miniExplosion = miniExplosion;
-        a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint.position,projectileSpeed,projectileLifeTime,projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
-        lastShotTime = Time.time;
-        GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>().projectiles.Add(a);
+        GameObject a = wav.gameObject.GetComponent<ObjectPool>().GetPooledObject();
+        if (a != null)
+        {
+            a.SetActive(true);
+            a.GetComponent<Ball>().miniExplosion = miniExplosion;
+            a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSize, isDoublingSpeedBullet, isChainReaction, isExplosiveImpact);
+            lastShotTime = Time.time;
+            wav.projectiles.Add(a);
+        }
+        
         if (isExtraBullet)
         {
             yield return new WaitForSeconds(0.15f);
-            ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
-            a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
-            a.GetComponent<Ball>().miniExplosion = miniExplosion;
-            a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
-            GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>().projectiles.Add(a);
+            //ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
+            a = wav.gameObject.GetComponent<ObjectPool>().GetPooledObject();
+            if (a != null)
+            {
+                a.SetActive(true);
+                a.GetComponent<Ball>().miniExplosion = miniExplosion;
+                a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSize, isDoublingSpeedBullet, isChainReaction, isExplosiveImpact);
+                wav.projectiles.Add(a);
+            }
+            
         }
         yield return new WaitForSeconds(0);
     }
 
     public void DrawTrajectory()
     {
+        while (gameObject.GetComponent<ObjectPool>().amountToPool != gameObject.GetComponent<ObjectPool>().pooledObjects.Count)
+        {
+            gameObject.GetComponent<ObjectPool>().StartPool();
+        }
         Vector3 perpendicular = shootPoint.position - transform.position;
         //Instantiate(trajectory, shootPoint.position, Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, transform.up);
@@ -161,12 +178,22 @@ public class Player : MonoBehaviour
         float i = 1;
         while (Vector2.Distance(shootPoint.position, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing)) < Vector2.Distance(shootPoint.position, ray.point))
         {
-            GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
-            trajectoryList.Add(a);
-            a.transform.parent = trajectoryParent.transform;
-            i += 1;
+            GameObject a = gameObject.GetComponent<ObjectPool>().GetPooledObject();
+            if (a != null)
+            {
+                a.SetActive(true);
+                a.transform.position = shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing);
+                a.transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular * -1);
+                a.transform.parent = trajectoryParent.transform;
+            }
+            else
+            {
+                break;
+            }
+            i++;
+            
         }
-        
+
     }
 
 
@@ -188,13 +215,16 @@ public class Player : MonoBehaviour
         //Instantiate(trajectory, shootPoint.position, Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
         RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, transform.up);
 
-        float k = 1;
+        float k = 30;
         while (Vector2.Distance(shootPoint.position, shootPoint.position + gameObject.transform.up * ((k - 1) * trajectorySpacing)) > Vector2.Distance(shootPoint.position, ray.point))
         {
-            GameObject b = trajectoryList[(int)k - 1];
-            trajectoryList.Remove(b);
-            Destroy(b);
-            k+=2;
+            GetComponent<ObjectPool>().pooledObjects[(int)k - 1].SetActive(false);
+            k--;
+            if (k == 0)
+            {
+                break;
+            }
+            
         }
 
 
@@ -203,34 +233,27 @@ public class Player : MonoBehaviour
         float i = 1;
         while (Vector2.Distance(shootPoint.position, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing)) < Vector2.Distance(shootPoint.position, ray.point))
         {
-            if (i > trajectoryList.Count)
+            if (i > 30-gameObject.GetComponent<ObjectPool>().HowManyInactive())
             {
-                GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
-                trajectoryList.Add(a);
-                a.transform.parent = trajectoryParent.transform;
+                GameObject a = gameObject.GetComponent<ObjectPool>().GetPooledObject();
+                if (a != null)
+                {
+                    a.SetActive(true);
+                    a.transform.position = shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing);
+                    a.transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular * -1);
+                    a.transform.parent = trajectoryParent.transform;
+                }
+                
             }
             //GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
-            trajectoryList[(int)i - 1].transform.position = shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing);
-            trajectoryList[(int)i - 1].transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular * -1);
+            gameObject.GetComponent<ObjectPool>().pooledObjects[(int)i - 1].transform.position = shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing);
+            gameObject.GetComponent<ObjectPool>().pooledObjects[(int)i - 1].transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular * -1);
+            
             i += 1;
         }
 
-        while (i - 1 < trajectoryList.Count)
-        {
-            GameObject b = trajectoryList[(int)i - 1];
-            trajectoryList.Remove(b);
-            Destroy(b);
-            i++;
-        }
-
     }
 
-    public void CreateDot(Vector3 perpendicular,int i)
-    {
-        GameObject a = Instantiate(trajectory, shootPoint.position + gameObject.transform.up * ((i - 1) * trajectorySpacing), Quaternion.LookRotation(Vector3.forward, perpendicular * -1));
-        trajectoryList.Add(a);
-        a.transform.parent = trajectoryParent.transform;
-    }
 
 
     public void TakeDamage(float damage)

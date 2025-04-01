@@ -66,6 +66,9 @@ public class WaveManager : MonoBehaviour
 
 
     public GameObject enemyInfoScreen;
+    public TMP_Text bulletCountText;
+
+    public ObjectPool circleSpawnController;
 
 
     // Start is called before the first frame update
@@ -112,6 +115,8 @@ public class WaveManager : MonoBehaviour
             NextWave();
             enemyInfoScreen.SetActive(false);
         }
+
+        bulletCountText.text = $"{GetComponent<ObjectPool>().HowManyInactive()}x";
         
     }
 
@@ -138,14 +143,24 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator SpawnEnemy(Vector3 spawnPos,GameObject enemy)
     {
-        GameObject b = Instantiate(enemySpawnCircle, spawnPos, Quaternion.identity);
+        //GameObject b = Instantiate(enemySpawnCircle, spawnPos, Quaternion.identity);
+        GameObject b = circleSpawnController.GetPooledObject();
+        if (b != null)
+        {
+            b.SetActive(true);
+            b.transform.position = spawnPos;
+        }
         GameObject a = Instantiate(enemy, spawnPos, Quaternion.identity);
         enemies.Add(a);
         a.GetComponent<Enemy>().waveMan = gameObject.GetComponent<WaveManager>();
         a.SetActive(false);
         a.GetComponent<Enemy>().enabled = false;
         yield return new WaitForSeconds(enemyCircleDuration);
-        Destroy(b);
+        //Destroy(b);
+        if (b != null)
+        {
+            b.SetActive(false);
+        }
         a.SetActive(true);
         a.GetComponent<Enemy>().enabled = true;
         currentEnemiesSpawned += 1;
@@ -169,6 +184,7 @@ public class WaveManager : MonoBehaviour
         waveText.text = $"Wave {wave}";
         lastTimeSpawned = 0;
         IsSelectionScreen = false;
+        Resources.UnloadUnusedAssets();
     }
 
 
@@ -287,4 +303,5 @@ public class WaveManager : MonoBehaviour
             }
         }
     }
+
 }

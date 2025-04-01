@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8106472197910868842}
   - component: {fileID: 3102275987914993493}
   - component: {fileID: 133415752087870041}
+  - component: {fileID: 4287618011326542241}
   m_Layer: 6
   m_Name: SmallGhost
   m_TagString: Enemy
@@ -104,6 +105,7 @@ MonoBehaviour:
   maxHealth: 15
   originalColor: {r: 1, g: 1, b: 1, a: 1}
   damageColor: {r: 1, g: 0.10849059, b: 0.10849059, a: 1}
+  deadColor: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 0.78039217}
   bulletSpeedReduction: 0.8
   damage: 2
   attackSpeed: 0.5
@@ -116,6 +118,11 @@ MonoBehaviour:
   isSpawning: 0
   spawnObject: {fileID: 0}
   spawnObjectNumber: 0
+  isRanged: 0
+  bullet: {fileID: 0}
+  bulletSpeed: 0
+  shootPoint: {fileID: 0}
+  noContraints: 0
 --- !u!61 &3102275987914993493
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -188,3 +195,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 7
+--- !u!95 &4287618011326542241
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522925902902326871}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ca483cfab9e2c554f90917f427c33636, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

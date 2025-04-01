@@ -84,7 +84,7 @@ public class ExplosionObject : MonoBehaviour
     {
         collision.gameObject.GetComponent<Enemy>().enabled = false;
         yield return new WaitForSeconds(disableTime);
-        if (collision.gameObject)
+        if (collision)
         {
             collision.gameObject.GetComponent<Enemy>().enabled = true;
             collision.gameObject.GetComponent<Rigidbody2D>().freezeRotation = true;

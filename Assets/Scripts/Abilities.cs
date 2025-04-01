@@ -7,7 +7,7 @@ using TMPro;
 
 public class Abilities : MonoBehaviour
 {
-    private enum Function { PlayerSpeedUp, ProjectileSpeedUp, ProjectileDamageUp, PlayerHealthUp, ShotSpeedUp, ProjectileSpeedReduction, ExtraBullet, ChainReaction, Acceleration, ExplosiveImpact};
+    private enum Function { PlayerSpeedUp, ProjectileSpeedUp, ProjectileDamageUp, PlayerHealthUp, ShotSpeedUp, ProjectileSizeUp, ExtraBullet, ChainReaction, Acceleration, ExplosiveImpact};
 
     private Function function;
 
@@ -82,9 +82,10 @@ public class Abilities : MonoBehaviour
 
     }
 
-    public void ProjectileSpeedReduction()
+    public void ProjectileSizeUp()
     {
-        player.projectileSpeedReduction = RoundUpTheFloat(player.projectileSpeedReduction * effect);
+        //player.projectileSpeedReduction = RoundUpTheFloat(player.projectileSpeedReduction * effect);
+        player.projectileSize *= effect;
 
     }
 
@@ -169,12 +170,12 @@ public class Abilities : MonoBehaviour
                 rarity = "Rare";
                 break;
 
-            case Function.ProjectileSpeedReduction:
-                abilityName = "Projectile Speed ReductionDown";
-                effect = 1.65f;
+            case Function.ProjectileSizeUp:
+                abilityName = "Projectile SizeUp";
+                effect = 1.1f;
                 effectSign = "*";
                 isPercentageBased = true;
-                initialValue = player.projectileSpeedReduction;
+                initialValue = player.projectileSize;
                 rarity = "Common";
                 break;
 
@@ -240,8 +241,8 @@ public class Abilities : MonoBehaviour
                 ShotSpeedUp();
                 break;
 
-            case Function.ProjectileSpeedReduction:
-                ProjectileSpeedReduction();
+            case Function.ProjectileSizeUp:
+                ProjectileSizeUp();
                 break;
 
             case Function.ExtraBullet:

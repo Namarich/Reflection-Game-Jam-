@@ -9,7 +9,7 @@ public class Ball : MonoBehaviour
 
     private bool wasPressed;
 
-    private float speedReduction;
+    public float speedReduction;
 
     private Vector2 direction;
 
@@ -36,6 +36,8 @@ public class Ball : MonoBehaviour
     public float whoDiesFirst;
 
     public bool canHurtThePlayer;
+
+    private WaveManager wav;
 
     // Start is called before the first frame update
     void Start()
@@ -70,6 +72,7 @@ public class Ball : MonoBehaviour
         }
         
         startOfLifeTime = Time.time;
+        wav = GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -98,7 +101,6 @@ public class Ball : MonoBehaviour
                 collision.gameObject.GetComponent<Enemy>().TakeDamage(damage,gameObject);
                 if (isChainReaction)
                 {
-                    WaveManager wav = GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>();
                     if (wav.enemies.Count > 1)
                     {
                         GameObject a = wav.enemies[Random.Range(0, wav.enemies.Count)];
@@ -110,28 +112,24 @@ public class Ball : MonoBehaviour
                     }
 
                 }
+                GameObject b = Instantiate(miniExplosion, transform.position, Quaternion.identity);
+                b.GetComponent<ExplosionObject>().objectTag = "Enemy";
             }
             else
             {
                 speed *= speedReduction;
             }
-            GameObject b = Instantiate(miniExplosion, transform.position, Quaternion.identity);
-            b.GetComponent<ExplosionObject>().objectTag = "Enemy";
             //b.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
         }
 
         if (collision.gameObject.tag == "Bullet" && isExplosiveImpact)
         {
             whoDiesFirst = Random.Range(1, 101);
-            while (whoDiesFirst == collision.gameObject.GetComponent<Ball>().whoDiesFirst)
-            {
-                whoDiesFirst = Random.Range(1, 101);
-                collision.gameObject.GetComponent<Ball>().whoDiesFirst = Random.Range(1, 101);
-            }
+            
 
-            if (whoDiesFirst > collision.gameObject.GetComponent<Ball>().whoDiesFirst)
+            if (whoDiesFirst >= collision.gameObject.GetComponent<Ball>().whoDiesFirst)
             {
-                Destroy(collision.gameObject);
+                collision.gameObject.SetActive(false);
             }
             else
             {
@@ -140,7 +138,7 @@ public class Ball : MonoBehaviour
             GameObject a = Instantiate(explosion, transform.position, Quaternion.identity);
             a.GetComponent<ExplosionObject>().objectTag = "";
             a.GetComponent<ExplosionObject>().explosionDamage = damage * 2;
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
 
         if (collision.gameObject.tag == "Player" && canHurtThePlayer)
@@ -154,7 +152,7 @@ public class Ball : MonoBehaviour
 
         Vector2 surfaceNormal = collision.contacts[0].normal;
         direction = Vector2.Reflect(direction, surfaceNormal);
-        if (!isFirstBounce)
+        if (!isFirstBounce && gameObject.GetComponent<SpriteRenderer>().color != originalColor)
         {
             gameObject.GetComponent<SpriteRenderer>().color = originalColor;
 
@@ -170,20 +168,21 @@ public class Ball : MonoBehaviour
 
     public void Reset()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
-    public void ShootYourself(Vector2 _direction,Vector3 startPos,float _speed,float _lifeTime,float _damage, float _speedReduction,bool isDoublingSpeed,bool isChainReac,bool isExplosive)
+    public void ShootYourself(Vector2 _direction,Vector3 startPos,float _speed,float _lifeTime,float _damage, float _bulletSize,bool isDoublingSpeed,bool isChainReac,bool isExplosive)
     {
-        GameObject a = Instantiate(miniExplosion, transform.position, Quaternion.identity);
-        a.GetComponent<ExplosionObject>().objectTag = "Player";
+        GameObject b = Instantiate(miniExplosion, startPos, Quaternion.identity);
+        b.GetComponent<ExplosionObject>().objectTag = "Player";
         //a.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
+        transform.position = startPos;
         MaxSpeed = _speed;
         isFirstBounce = true;
         direction = _direction;
         wasPressed = true;
         damage = _damage;
-        speedReduction = _speedReduction;
+        gameObject.transform.localScale = new Vector3(0.4f,0.4f,0.4f) * _bulletSize;
         speed = MaxSpeed;
         Vector3 perpendicular = startPos - (Vector3)direction;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular);
@@ -191,6 +190,7 @@ public class Ball : MonoBehaviour
         isDoublingSpeedBullet = isDoublingSpeed;
         isChainReaction = isChainReac;
         isExplosiveImpact = isExplosive;
-
+        startOfLifeTime = Time.time;
+        gameObject.GetComponent<SpriteRenderer>().color = transparentColor;
     }
 }
