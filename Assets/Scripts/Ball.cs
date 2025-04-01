@@ -29,6 +29,7 @@ public class Ball : MonoBehaviour
     public bool isChainReaction;
 
     public GameObject explosion;
+    public GameObject miniExplosion;
 
     public bool isExplosiveImpact;
 
@@ -94,7 +95,7 @@ public class Ball : MonoBehaviour
             if (!collision.gameObject.GetComponent<Enemy>().hasShield || collision.gameObject.GetComponent<Enemy>().shieldCollider != collision.collider)
             {
                 speed *= collision.gameObject.GetComponent<Enemy>().bulletSpeedReduction;
-                collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+                collision.gameObject.GetComponent<Enemy>().TakeDamage(damage,gameObject);
                 if (isChainReaction)
                 {
                     WaveManager wav = GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>();
@@ -105,7 +106,7 @@ public class Ball : MonoBehaviour
                         {
                             a = wav.enemies[Random.Range(0, wav.enemies.Count)];
                         }
-                        a.GetComponent<Enemy>().TakeDamage(damage / 2);
+                        a.GetComponent<Enemy>().TakeDamage(damage / 2,gameObject);
                     }
 
                 }
@@ -114,7 +115,9 @@ public class Ball : MonoBehaviour
             {
                 speed *= speedReduction;
             }
-            
+            GameObject b = Instantiate(miniExplosion, transform.position, Quaternion.identity);
+            b.GetComponent<ExplosionObject>().objectTag = "Enemy";
+            //b.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
         }
 
         if (collision.gameObject.tag == "Bullet" && isExplosiveImpact)
@@ -123,7 +126,9 @@ public class Ball : MonoBehaviour
             while (whoDiesFirst == collision.gameObject.GetComponent<Ball>().whoDiesFirst)
             {
                 whoDiesFirst = Random.Range(1, 101);
+                collision.gameObject.GetComponent<Ball>().whoDiesFirst = Random.Range(1, 101);
             }
+
             if (whoDiesFirst > collision.gameObject.GetComponent<Ball>().whoDiesFirst)
             {
                 Destroy(collision.gameObject);
@@ -133,6 +138,7 @@ public class Ball : MonoBehaviour
                 return;
             }
             GameObject a = Instantiate(explosion, transform.position, Quaternion.identity);
+            a.GetComponent<ExplosionObject>().objectTag = "";
             a.GetComponent<ExplosionObject>().explosionDamage = damage * 2;
             Destroy(gameObject);
         }
@@ -141,6 +147,9 @@ public class Ball : MonoBehaviour
         {
             speed *= speedReduction;
             collision.gameObject.GetComponent<Player>().TakeDamage(damage);
+            GameObject b = Instantiate(miniExplosion, transform.position, Quaternion.identity);
+            //b.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
+            b.GetComponent<ExplosionObject>().objectTag = "Player";
         }
 
         Vector2 surfaceNormal = collision.contacts[0].normal;
@@ -166,6 +175,9 @@ public class Ball : MonoBehaviour
 
     public void ShootYourself(Vector2 _direction,Vector3 startPos,float _speed,float _lifeTime,float _damage, float _speedReduction,bool isDoublingSpeed,bool isChainReac,bool isExplosive)
     {
+        GameObject a = Instantiate(miniExplosion, transform.position, Quaternion.identity);
+        a.GetComponent<ExplosionObject>().objectTag = "Player";
+        //a.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
         MaxSpeed = _speed;
         isFirstBounce = true;
         direction = _direction;
@@ -174,7 +186,7 @@ public class Ball : MonoBehaviour
         speedReduction = _speedReduction;
         speed = MaxSpeed;
         Vector3 perpendicular = startPos - (Vector3)direction;
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular * -1);
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular);
         lifeTime = _lifeTime;
         isDoublingSpeedBullet = isDoublingSpeed;
         isChainReaction = isChainReac;

@@ -113,6 +113,14 @@ MonoBehaviour:
   smallDamage: {r: 0.9433962, g: 0.47383496, b: 0.04004982, a: 1}
   hasShield: 0
   shieldCollider: {fileID: 0}
+  isSpawning: 0
+  spawnObject: {fileID: 0}
+  spawnObjectNumber: 0
+  isRanged: 0
+  bullet: {fileID: 0}
+  bulletSpeed: 0
+  shootPoint: {fileID: 0}
+  noContraints: 0
 --- !u!61 &9222582045091615088
 BoxCollider2D:
   m_ObjectHideFlags: 0

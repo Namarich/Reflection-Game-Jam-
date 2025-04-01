@@ -35,8 +35,6 @@ public class Player : MonoBehaviour
     public Color originalColor;
     public Color damageColor;
 
-
-
     public float projectileSpeed;
     public float projectileDamage;
     public float projectileSpeedReduction;
@@ -61,6 +59,9 @@ public class Player : MonoBehaviour
     public Color minColor;
 
     public Animator playerDamageAnim;
+    public Animator camAnim;
+
+    public GameObject miniExplosion;
 
     void Start()
     {
@@ -135,6 +136,7 @@ public class Player : MonoBehaviour
         //Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
 
         GameObject a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+        a.GetComponent<Ball>().miniExplosion = miniExplosion;
         a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position ), shootPoint.position,projectileSpeed,projectileLifeTime,projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
         lastShotTime = Time.time;
         GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>().projectiles.Add(a);
@@ -143,6 +145,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.15f);
             ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
             a = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+            a.GetComponent<Ball>().miniExplosion = miniExplosion;
             a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSpeedReduction,isDoublingSpeedBullet,isChainReaction,isExplosiveImpact);
             GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>().projectiles.Add(a);
         }
@@ -232,12 +235,16 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        StartCoroutine(ChangeColor());
-        if (currentHealth <= 0)
+        if (damage > 0)
         {
-            SceneManager.LoadScene("Menu");
+            currentHealth -= damage;
+            StartCoroutine(ChangeColor());
+            if (currentHealth <= 0)
+            {
+                SceneManager.LoadScene("Menu");
+            }
         }
+        
     }
 
     IEnumerator ChangeColor()

@@ -20,6 +20,9 @@ public class ExplosionObject : MonoBehaviour
     public RigidbodyConstraints2D enemyDefaultContraints;
     public RigidbodyConstraints2D enemyExplosionContraints;
 
+
+    public string objectTag;
+
     // Start is called before the first frame update
 
     private void Awake()
@@ -44,7 +47,7 @@ public class ExplosionObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag != "Wall" && !isInactive)
+        if (collision.tag != "Wall" && !isInactive && (objectTag == "" || objectTag == collision.gameObject.tag))
         {
             if (collision.tag == "Player")
             {
@@ -56,7 +59,7 @@ public class ExplosionObject : MonoBehaviour
             {
                 collision.gameObject.GetComponent<Rigidbody2D>().freezeRotation = false;
                 collision.gameObject.GetComponent<Rigidbody2D>().constraints = enemyExplosionContraints;
-                collision.gameObject.GetComponent<Enemy>().TakeDamage(explosionDamage);
+                collision.gameObject.GetComponent<Enemy>().TakeDamage(explosionDamage,gameObject);
                 StartCoroutine(DisableEnemy(collision));
                 
             }

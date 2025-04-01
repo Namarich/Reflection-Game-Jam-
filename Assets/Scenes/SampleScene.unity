@@ -1940,6 +1940,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2021,6 +2022,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &519420033
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3a8e2a14fa30f074c973d95fb9cec10e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &593401842
 GameObject:
   m_ObjectHideFlags: 0
@@ -2046,7 +2068,7 @@ Transform:
   m_GameObject: {fileID: 593401842}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2917,6 +2939,8 @@ MonoBehaviour:
   maxColor: {r: 0.882353, g: 0.47450984, b: 0.17254902, a: 1}
   minColor: {r: 0.25882354, g: 0.3647059, b: 0.37647063, a: 1}
   playerDamageAnim: {fileID: 2091183764}
+  camAnim: {fileID: 519420033}
+  miniExplosion: {fileID: 7014962296033563493, guid: a4e384314e5a9bf45a4fc9a6e4effe4b, type: 3}
 --- !u!1 &953497077
 GameObject:
   m_ObjectHideFlags: 0

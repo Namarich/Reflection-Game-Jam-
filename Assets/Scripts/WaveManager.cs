@@ -13,7 +13,6 @@ public class WaveManager : MonoBehaviour
     public int enemyNumberProgression;
     private int currentEnemiesSpawned;
 
-
     [System.Serializable]
     public class Ghost
     {
@@ -26,7 +25,6 @@ public class WaveManager : MonoBehaviour
 
     public List<GameObject> canSummonEnemies;
 
-
     public List<GameObject> enemies;
 
     public float timeBetweenSpawns;
@@ -38,9 +36,7 @@ public class WaveManager : MonoBehaviour
     private float currentSpawnZoneWidth;
     private float currentSpawnZoneHeight;
 
-
     public List<GameObject> zones;
-
 
     public GameObject selectionScreen;
     public GameObject fightingScreen;
@@ -57,11 +53,9 @@ public class WaveManager : MonoBehaviour
 
     private bool startedSpawning;
 
-
     public TMP_Text waveText;
 
     public List<GameObject> projectiles;
-
 
     public bool isTutorial = true;
     public List<string> tutorials;
@@ -91,11 +85,13 @@ public class WaveManager : MonoBehaviour
         {
             //Spawn(enemy);
             CanSummonEnemies();
-            int howMany = Random.Range(1, (wave / 3) + 2);
-            while (howMany+currentEnemiesSpawned > startEnemyNumber + (wave - 1) * enemyNumberProgression)
-            {
-                howMany = Random.Range(1, (wave / 3) + 2);
-            }
+            //int howMany = Random.Range(1, (wave / 3) + 2);
+            //while (howMany+currentEnemiesSpawned > startEnemyNumber + (wave - 1) * enemyNumberProgression)
+            //{
+                //howMany = Random.Range(1, (wave / 3) + 2);
+            //}
+
+            int howMany = Random.Range(1, ((wave / 3) + 2) % (startEnemyNumber + (wave - 1) * enemyNumberProgression));
             for (int i = 0;i < howMany; i++)
             {
                 Spawn(canSummonEnemies[Random.Range(0, canSummonEnemies.Count)]);

@@ -38,6 +38,10 @@ public class Enemy : MonoBehaviour
     public float bulletSpeed;
     public Transform shootPoint;
 
+    public RigidbodyConstraints2D noContraints;
+
+    private bool canMove = true;
+
 
     // Start is called before the first frame update
     void Start()
@@ -63,7 +67,11 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.position = Vector3.MoveTowards(transform.position,playerTransform.position,speed);
+        if (canMove)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, playerTransform.position, speed);
+        }
+        
         //Vector3 dir = (playerTransform.position - transform.position).normalized;
         //transform.rotation = Quaternion.LookRotation(Vector3.forward,dir);
         if (transform.position.x < playerTransform.position.x)
@@ -78,20 +86,24 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage,GameObject whoHitMe)
     {
         currentHealth -= damage;
         DamagePopup(damage);
-        StartCoroutine(ChangeColor());
+        StartCoroutine(ChangeColor(whoHitMe));
 
     }
 
 
     public void DamagePopup(float damage)
     {
-        GameObject a = Instantiate(damagePopup, transform.position, Quaternion.identity);
-        a.GetComponent<TMP_Text>().color = Color.Lerp(smallDamage, bigDamage, damage / maxHealth);
-        a.GetComponent<TMP_Text>().text = damage.ToString();
+        if (damage > 0)
+        {
+            GameObject a = Instantiate(damagePopup, transform.position, Quaternion.identity);
+            a.GetComponent<TMP_Text>().color = Color.Lerp(smallDamage, bigDamage, damage / maxHealth);
+            a.GetComponent<TMP_Text>().text = damage.ToString();
+        }
+        
     }
 
 
@@ -105,11 +117,8 @@ public class Enemy : MonoBehaviour
     }
 
 
-    IEnumerator ChangeColor()
+    IEnumerator ChangeColor(GameObject whoHitMe)
     {
-        gameObject.GetComponent<SpriteRenderer>().color = damageColor;
-        yield return new WaitForSeconds(0.15f);
-        gameObject.GetComponent<SpriteRenderer>().color = originalColor;
         if (currentHealth <= 0)
         {
             if (isSpawning)
@@ -118,11 +127,39 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                waveMan.enemies.Remove(gameObject);
-                Destroy(gameObject);
+                StartCoroutine(DieGracefully(whoHitMe));
+
             }
-            
+
         }
+        else
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = damageColor;
+            yield return new WaitForSeconds(0.15f);
+            gameObject.GetComponent<SpriteRenderer>().color = originalColor;
+        }
+        
+    }
+
+
+    IEnumerator DieGracefully(GameObject whoHitMe)
+    {
+        canMove = false;
+        gameObject.GetComponent<Rigidbody2D>().constraints = noContraints;
+        gameObject.GetComponent<Rigidbody2D>().fixedAngle = false;
+        foreach (BoxCollider2D a in gameObject.GetComponents<BoxCollider2D>())
+        {
+            a.enabled = false;
+        }
+        gameObject.GetComponent<Rigidbody2D>().AddExplosionForce(500,whoHitMe.transform.position,1);
+
+        for (float i = 255; i > 0; i--)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, i);
+            yield return new WaitForSeconds(0.25f/255.0f);
+        }
+        waveMan.enemies.Remove(gameObject);
+        Destroy(gameObject);
     }
 
 
@@ -159,7 +196,7 @@ public class Enemy : MonoBehaviour
         Debug.DrawRay(shootPoint.position, (shootPoint.position - playerTransform.position) * -1, Color.green,3f);
 
         GameObject a = Instantiate(bullet, shootPoint.position, Quaternion.identity);
+        a.GetComponent<Ball>().miniExplosion = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().miniExplosion;
         a.GetComponent<Ball>().ShootYourself((shootPoint.position - playerTransform.position) * -1, shootPoint.position, bulletSpeed, 2f, damage, 0.6f, false, false,false);
-        
     }
 }

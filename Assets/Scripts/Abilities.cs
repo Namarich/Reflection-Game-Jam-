@@ -126,7 +126,7 @@ public class Abilities : MonoBehaviour
         {
             case Function.PlayerSpeedUp:
                 abilityName = "Player SpeedUp";
-                effect = 1;
+                effect = 2;
                 effectSign = "+";
                 isPercentageBased = false;
                 initialValue = player.moveSpeed;
@@ -135,7 +135,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileSpeedUp:
                 abilityName = "Projectile SpeedUp";
-                effect = 1.25f;
+                effect = 1.75f;
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileSpeed;
@@ -144,7 +144,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileDamageUp:
                 abilityName = "Projectile DamageUp";
-                effect = 1.2f;
+                effect = 1.35f;
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileDamage;
@@ -153,7 +153,7 @@ public class Abilities : MonoBehaviour
 
             case Function.PlayerHealthUp:
                 abilityName = "Player HealthUp";
-                effect = 30;
+                effect = 50;
                 effectSign = "+";
                 isPercentageBased = false;
                 initialValue = player.maxHealth;
@@ -162,7 +162,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ShotSpeedUp:
                 abilityName = "Shot SpeedUp";
-                effect = 1.15f;
+                effect = 1.2f;
                 effectSign = "/";
                 isPercentageBased = true;
                 initialValue = player.shotSpeed;
@@ -171,7 +171,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileSpeedReduction:
                 abilityName = "Projectile Speed ReductionDown";
-                effect = 1.3f;
+                effect = 1.65f;
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileSpeedReduction;

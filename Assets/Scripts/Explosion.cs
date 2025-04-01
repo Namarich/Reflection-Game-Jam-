@@ -19,6 +19,7 @@ public static class Explosion
 
         float explosionDistance = 2f;
         rb.AddForce(Mathf.Lerp(0, explosionForce, (explosionDistance)) * explosionDir, mode);
+        //Camera.main.GetComponent<Animator>().SetTrigger("Explosion");
     }
 
 }

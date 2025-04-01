@@ -136,9 +136,9 @@ MonoBehaviour:
   maxHealth: 20
   originalColor: {r: 1, g: 1, b: 1, a: 1}
   damageColor: {r: 1, g: 0.10849059, b: 0.10849059, a: 1}
-  bulletSpeedReduction: 1
+  bulletSpeedReduction: 0.6
   damage: 15
-  attackSpeed: 2.5
+  attackSpeed: 3.5
   lastTimeAttacked: 0
   damagePopup: {fileID: 7804510980989446516, guid: 772992b4b220ce24fb8ac4c7050d71f8, type: 3}
   bigDamage: {r: 1, g: 0, b: 0, a: 1}
@@ -150,7 +150,7 @@ MonoBehaviour:
   spawnObjectNumber: 0
   isRanged: 1
   bullet: {fileID: 4692634190975927067, guid: 1110085888ca7be4a8dc9a86fc6390aa, type: 3}
-  bulletSpeed: 8
+  bulletSpeed: 5
   shootPoint: {fileID: 1735432847903655581}
 --- !u!61 &7875340607022632208
 BoxCollider2D:
