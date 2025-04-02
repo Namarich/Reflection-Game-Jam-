@@ -134,6 +134,7 @@ public class Ball : MonoBehaviour
             a.GetComponent<ExplosionObject>().objectTag = "";
             a.GetComponent<ExplosionObject>().explosionDamage = damage * 2;
             gameObject.SetActive(false);
+            GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("explosion");
         }
         else if (collision.gameObject.tag == "Player" && canHurtThePlayer)
         {
@@ -173,6 +174,10 @@ public class Ball : MonoBehaviour
         if (!canHurtThePlayer)
         {
             isFirstBounce = true;
+        }
+        else
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = originalColor;
         }
         direction = _direction;
         wasPressed = true;

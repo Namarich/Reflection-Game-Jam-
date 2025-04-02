@@ -7,7 +7,7 @@ using TMPro;
 
 public class Abilities : MonoBehaviour
 {
-    private enum Function { PlayerSpeedUp, ProjectileSpeedUp, ProjectileDamageUp, PlayerHealthUp, ShotSpeedUp, ProjectileSizeUp, ExtraBullet, ChainReaction, Acceleration, ExplosiveImpact};
+    private enum Function { PlayerSpeedUp, ProjectileSpeedUp, ProjectileDamageUp, PlayerHealthUp, ShotSpeedUp, ProjectileSizeUp, ExtraBullet, Acceleration, ExplosiveImpact};
 
     private Function function;
 
@@ -103,15 +103,6 @@ public class Abilities : MonoBehaviour
         specialAbilities[1].SetActive(true);
     }
 
-
-    public void ChainReaction()
-    {
-        player.isChainReaction = true;
-        waveMan.cannotUseAbilities.Add(function.ToString());
-        specialAbilities[2].SetActive(true);
-    }
-
-
     public void ExplosiveImpact()
     {
         player.isExplosiveImpact = true;
@@ -172,11 +163,11 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileSizeUp:
                 abilityName = "Projectile SizeUp";
-                effect = 1.1f;
+                effect = 1.15f;
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileSize;
-                rarity = "Common";
+                rarity = "Rare";
                 break;
 
             case Function.ExtraBullet:
@@ -195,15 +186,6 @@ public class Abilities : MonoBehaviour
                 isPercentageBased = false;
                 initialValue = 0;
                 rarity = "Rare";
-                break;
-
-            case Function.ChainReaction:
-                abilityName = "Chain Reaction";
-                effect = 0;
-                effectSign = "Bullet also deals 50% damage to a random enemy";
-                isPercentageBased = false;
-                initialValue = 0;
-                rarity = "Epic";
                 break;
 
             case Function.ExplosiveImpact:
@@ -253,14 +235,12 @@ public class Abilities : MonoBehaviour
                 Acceleration();
                 break;
 
-            case Function.ChainReaction:
-                ChainReaction();
-                break;
 
             case Function.ExplosiveImpact:
                 ExplosiveImpact();
                 break;
         }
+        GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("press");
         waveMan.EnemyInfoScreen();
     }
 
@@ -329,7 +309,7 @@ public class Abilities : MonoBehaviour
             }
         }
 
-
+        
     }
 
         
@@ -353,6 +333,7 @@ public class Abilities : MonoBehaviour
     public void Hover()
     {
         anim.Play("Button");
+        GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("select");
         foreach (StatUI a in stats)
         {
             if (a.value == initialValue && initialValue != 0)

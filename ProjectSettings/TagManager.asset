@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - WaveManager
   - Bullet
+  - SoundManager
   layers:
   - Default
   - TransparentFX

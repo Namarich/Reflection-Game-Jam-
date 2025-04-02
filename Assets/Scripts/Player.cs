@@ -123,7 +123,7 @@ public class Player : MonoBehaviour
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         //Vector3 perpendicular = transform.position - mousePos;
 
-        Vector2 aimDirection = (Vector2)mousePos - rb.position;
+        Vector2 aimDirection = mousePos - transform.position;
         float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg - 90f;
         //transform.rotation = Quaternion.LookRotation(Vector3.forward, perpendicular*-1);
         rb.rotation = aimAngle;
@@ -145,6 +145,7 @@ public class Player : MonoBehaviour
             a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSize, isDoublingSpeedBullet, isChainReaction, isExplosiveImpact);
             lastShotTime = Time.time;
             wav.projectiles.Add(a);
+            GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("shoot3");
         }
         
         if (isExtraBullet)
@@ -158,6 +159,7 @@ public class Player : MonoBehaviour
                 a.GetComponent<Ball>().miniExplosion = miniExplosion;
                 a.GetComponent<Ball>().ShootYourself((shootPoint.position - transform.position), shootPoint.position, projectileSpeed, projectileLifeTime, projectileDamage, projectileSize, isDoublingSpeedBullet, isChainReaction, isExplosiveImpact);
                 wav.projectiles.Add(a);
+                GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("shoot3");
             }
             
         }
@@ -259,11 +261,13 @@ public class Player : MonoBehaviour
     {
         if (damage > 0)
         {
+            GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("hit4");
             currentHealth -= damage;
             StartCoroutine(ChangeColor());
             if (currentHealth <= 0)
             {
-                SceneManager.LoadScene("Menu");
+                playerDamageAnim.SetBool("wasPlayerDamaged", false);
+                wav.Lose();
             }
         }
         

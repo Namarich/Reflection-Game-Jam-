@@ -106,6 +106,7 @@ public class Enemy : MonoBehaviour
     {
         if (damage > 0 && canMove)
         {
+            GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("hit");
             GameObject a = Instantiate(damagePopup, transform.position, Quaternion.identity);
             a.GetComponent<TMP_Text>().color = Color.Lerp(smallDamage, bigDamage, damage / maxHealth);
             a.GetComponent<TMP_Text>().text = ((float)System.Math.Round(damage, 2)).ToString();

@@ -9,6 +9,7 @@ public class EnemyPanel : MonoBehaviour
 
     public void Hover()
     {
+        GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("select");
         anim.Play("Button");
         descriptionPanel.SetActive(true);
     }

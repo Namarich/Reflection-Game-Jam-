@@ -70,6 +70,11 @@ public class WaveManager : MonoBehaviour
 
     public ObjectPool circleSpawnController;
 
+    public GameObject loseMenu;
+    public TMP_Text loseWaveText;
+
+    public bool isCursorVisibleAlways = true;
+
 
     // Start is called before the first frame update
     void Start()
@@ -79,6 +84,11 @@ public class WaveManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         waveText.text = $"Wave {wave}";
         tutorialPanel.SetActive(true);
+        if (!isCursorVisibleAlways)
+        {
+            Cursor.visible = false;
+        }
+        
     }
 
     // Update is called once per frame
@@ -185,6 +195,11 @@ public class WaveManager : MonoBehaviour
         lastTimeSpawned = 0;
         IsSelectionScreen = false;
         Resources.UnloadUnusedAssets();
+        if (!isCursorVisibleAlways)
+        {
+            Cursor.visible = false;
+        }
+        
     }
 
 
@@ -210,6 +225,7 @@ public class WaveManager : MonoBehaviour
 
     void SelectionScreen()
     {
+        Cursor.visible = true;
         player.playerDamageAnim.SetBool("wasPlayerDamaged", false);
         player.gameObject.transform.position = transform.position;
         player.enabled = false;
@@ -226,6 +242,7 @@ public class WaveManager : MonoBehaviour
             a.TakeRandomEnum();
         }
     }
+
 
     IEnumerator WaitUntilSelectionScreen()
     {
@@ -311,6 +328,14 @@ public class WaveManager : MonoBehaviour
 
         if (tutorialStep == 6)
         {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                tutorialStep += 1;
+            }
+        }
+
+        if (tutorialStep == 7)
+        {
             if (Input.GetKeyDown(KeyCode.E))
             {
                 tutorialPanel.SetActive(false);
@@ -331,6 +356,18 @@ public class WaveManager : MonoBehaviour
             
         }
         return a;
+    }
+
+
+    public void Lose()
+    {
+        loseMenu.SetActive(true);
+        selectionScreen.SetActive(true);
+        IsSelectionScreen = true;
+        SelectionScreen();
+        tutorialPanel.SetActive(false);
+        fightingScreen.SetActive(false);
+        loseWaveText.text = $"wave {wave}";
     }
 
 }
