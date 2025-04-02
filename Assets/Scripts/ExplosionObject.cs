@@ -66,7 +66,6 @@ public class ExplosionObject : MonoBehaviour
 
             collision.GetComponent<Rigidbody2D>().AddExplosionForce(explosionPower,transform.position,explosionRadius);
         }
-        Debug.Log(collision.GetComponent<Rigidbody2D>().velocity);
     }
 
     IEnumerator DisablePlayer(Collider2D collision)
@@ -84,7 +83,7 @@ public class ExplosionObject : MonoBehaviour
     {
         collision.gameObject.GetComponent<Enemy>().enabled = false;
         yield return new WaitForSeconds(disableTime);
-        if (collision)
+        if (collision.gameObject)
         {
             collision.gameObject.GetComponent<Enemy>().enabled = true;
             collision.gameObject.GetComponent<Rigidbody2D>().freezeRotation = true;

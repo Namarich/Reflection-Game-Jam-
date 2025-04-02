@@ -99,19 +99,15 @@ public class Ball : MonoBehaviour
             {
                 speed *= collision.gameObject.GetComponent<Enemy>().bulletSpeedReduction;
                 collision.gameObject.GetComponent<Enemy>().TakeDamage(damage,gameObject);
-                if (isChainReaction)
-                {
-                    if (wav.enemies.Count > 1)
-                    {
-                        GameObject a = wav.enemies[Random.Range(0, wav.enemies.Count)];
-                        while (a == collision.gameObject || !a.GetComponent<Enemy>().enabled)
-                        {
-                            a = wav.enemies[Random.Range(0, wav.enemies.Count)];
-                        }
-                        a.GetComponent<Enemy>().TakeDamage(damage / 2,gameObject);
-                    }
+                //if (isChainReaction)
+                //{
+                    //GameObject a = wav.GetARandomEnemy(collision.gameObject);
+                    //if (a != collision.gameObject)
+                    //{
+                        //a.GetComponent<Enemy>().TakeDamage(damage / 2, gameObject);
+                    //}
+                //}
 
-                }
                 GameObject b = Instantiate(miniExplosion, transform.position, Quaternion.identity);
                 b.GetComponent<ExplosionObject>().objectTag = "Enemy";
             }
@@ -121,10 +117,9 @@ public class Ball : MonoBehaviour
             }
             //b.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
         }
-
-        if (collision.gameObject.tag == "Bullet" && isExplosiveImpact)
+        else if (collision.gameObject.tag == "Bullet" && isExplosiveImpact)
         {
-            whoDiesFirst = Random.Range(1, 101);
+            whoDiesFirst = Random.Range(1, 100000001);
             
 
             if (whoDiesFirst >= collision.gameObject.GetComponent<Ball>().whoDiesFirst)
@@ -140,13 +135,11 @@ public class Ball : MonoBehaviour
             a.GetComponent<ExplosionObject>().explosionDamage = damage * 2;
             gameObject.SetActive(false);
         }
-
-        if (collision.gameObject.tag == "Player" && canHurtThePlayer)
+        else if (collision.gameObject.tag == "Player" && canHurtThePlayer)
         {
             speed *= speedReduction;
             collision.gameObject.GetComponent<Player>().TakeDamage(damage);
             GameObject b = Instantiate(miniExplosion, transform.position, Quaternion.identity);
-            //b.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
             b.GetComponent<ExplosionObject>().objectTag = "Player";
         }
 
@@ -175,10 +168,12 @@ public class Ball : MonoBehaviour
     {
         GameObject b = Instantiate(miniExplosion, startPos, Quaternion.identity);
         b.GetComponent<ExplosionObject>().objectTag = "Player";
-        //a.GetComponent<ExplosionObject>().explosionPower = 3f * speed;
         transform.position = startPos;
         MaxSpeed = _speed;
-        isFirstBounce = true;
+        if (!canHurtThePlayer)
+        {
+            isFirstBounce = true;
+        }
         direction = _direction;
         wasPressed = true;
         damage = _damage;

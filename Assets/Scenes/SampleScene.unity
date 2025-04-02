@@ -1577,7 +1577,7 @@ PrefabInstance:
       objectReference: {fileID: 953497080}
     - target: {fileID: 5456755404205489795, guid: 4d19d29fd5566a14c81e71cc7adca70a, type: 3}
       propertyPath: description
-      value: Projectile speed reduction after hitting a wall is multiplied by VALUE.
+      value: Projectile size.
       objectReference: {fileID: 0}
     - target: {fileID: 5456755404205489795, guid: 4d19d29fd5566a14c81e71cc7adca70a, type: 3}
       propertyPath: addedValueText
@@ -3235,9 +3235,9 @@ RectTransform:
   m_Children:
   - {fileID: 1919032848}
   - {fileID: 1660621856}
+  - {fileID: 1536033670}
   - {fileID: 1394137176}
   - {fileID: 2140662307}
-  - {fileID: 1536033670}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6908,6 +6908,8 @@ MonoBehaviour:
   - Oh no! A ghost spawned. Try killing it! This is a basic ghost, but you will see
     many more powerful ghosts in later waves!
   - After you get through a wave of ghosts, you can choose one of three powerUps.
+  - After you pick a powerUp, you can see incoming ghosts. Hover on them to see some
+    info.
   - That's all, now just enjoy the game!  Press E to close this window.
   tutorialText: {fileID: 215905757}
   tutorialPanel: {fileID: 1394137175}

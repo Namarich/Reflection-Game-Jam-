@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
         
 
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 perpendicular = transform.position - mousePos;
+        //Vector3 perpendicular = transform.position - mousePos;
 
         Vector2 aimDirection = (Vector2)mousePos - rb.position;
         float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg - 90f;
@@ -135,7 +135,6 @@ public class Player : MonoBehaviour
     {
         //Debug.DrawRay(shootPoint.position, shootPoint.up * 10, Color.green, 2f);
         
-        RaycastHit2D ray = Physics2D.Raycast(shootPoint.position, shootPoint.up);
         //Debug.DrawRay(shootPoint.position, (transform.position - shootPoint.position)*-5, Color.green,3f);
 
         GameObject a = wav.gameObject.GetComponent<ObjectPool>().GetPooledObject();
@@ -162,7 +161,7 @@ public class Player : MonoBehaviour
             }
             
         }
-        yield return new WaitForSeconds(0);
+        //yield return new WaitForSeconds(0);
     }
 
     public void DrawTrajectory()

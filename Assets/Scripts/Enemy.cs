@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
 
     public RigidbodyConstraints2D noContraints;
 
-    private bool canMove = true;
+    public bool canMove = true;
 
 
 
@@ -64,6 +64,11 @@ public class Enemy : MonoBehaviour
         {
             Shoot();
             lastTimeAttacked = Time.time;
+        }
+
+        if (!canMove)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = deadColor;
         }
     }
 

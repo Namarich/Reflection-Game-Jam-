@@ -8,7 +8,7 @@ public class StatUI : MonoBehaviour
 
     private Player player;
 
-    public enum Stats {damage, health, shotSpeed, projectileSpeed, playerSpeed, projectileSpeedReduction};
+    public enum Stats {damage, health, shotSpeed, projectileSpeed, playerSpeed, projectileSizeUp};
 
     public Stats stat;
 
@@ -60,7 +60,7 @@ public class StatUI : MonoBehaviour
             case Stats.playerSpeed:
                 value = player.moveSpeed;
                 break;
-            case Stats.projectileSpeedReduction:
+            case Stats.projectileSizeUp:
                 value = player.projectileSize;
                 break;
         }

@@ -190,7 +190,11 @@ public class WaveManager : MonoBehaviour
 
     public void EnemyInfoScreen()
     {
-        tutorialPanel.SetActive(false);
+        //tutorialPanel.SetActive(false);
+        if (isTutorial)
+        {
+            tutorialPanel.SetActive(true);
+        }
         enemyInfoScreen.SetActive(true);
         wave += 1;
         foreach (Ghost a in enemyList)
@@ -206,6 +210,7 @@ public class WaveManager : MonoBehaviour
 
     void SelectionScreen()
     {
+        player.playerDamageAnim.SetBool("wasPlayerDamaged", false);
         player.gameObject.transform.position = transform.position;
         player.enabled = false;
         selectionScreen.SetActive(true);
@@ -225,7 +230,7 @@ public class WaveManager : MonoBehaviour
     IEnumerator WaitUntilSelectionScreen()
     {
         IsSelectionScreen = true;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.2f);
         SelectionScreen();
     }
 
@@ -291,17 +296,41 @@ public class WaveManager : MonoBehaviour
             if (wave > 1)
             {
                 tutorialStep += 1;
-                isTutorial = false;
+                
             }
         }
 
         if (tutorialStep == 5)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                tutorialStep += 1;
+                isTutorial = false;
+            }
+        }
+
+        if (tutorialStep == 6)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
                 tutorialPanel.SetActive(false);
             }
         }
+    }
+
+
+    public GameObject GetARandomEnemy(GameObject exceptThisOne)
+    {
+        GameObject a = enemies[0];
+        if (enemies.Count > 1)
+        {
+            while (a == exceptThisOne || !a.activeInHierarchy || !a.GetComponent<Enemy>().canMove)
+            {
+                a = enemies[Random.Range(0, enemies.Count)];
+            }
+            
+        }
+        return a;
     }
 
 }

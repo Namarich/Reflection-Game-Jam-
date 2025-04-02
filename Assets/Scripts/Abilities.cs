@@ -136,7 +136,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileSpeedUp:
                 abilityName = "Projectile SpeedUp";
-                effect = 1.75f;
+                effect = 1.4f;
                 effectSign = "*";
                 isPercentageBased = true;
                 initialValue = player.projectileSpeed;
@@ -163,7 +163,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ShotSpeedUp:
                 abilityName = "Shot SpeedUp";
-                effect = 1.2f;
+                effect = 1.15f;
                 effectSign = "/";
                 isPercentageBased = true;
                 initialValue = player.shotSpeed;
