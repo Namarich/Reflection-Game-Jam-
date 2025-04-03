@@ -70,6 +70,10 @@ public class Ball : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().color = transparentColor;
         }
+        else
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = originalColor;
+        }
         
         startOfLifeTime = Time.time;
         wav = GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>();
