@@ -182,6 +182,7 @@ public class WaveManager : MonoBehaviour
 
     public void NextWave()
     {
+        player.playerDamageAnim.enabled = true;
         if (isTutorial)
         {
             tutorialPanel.SetActive(true);
@@ -227,6 +228,7 @@ public class WaveManager : MonoBehaviour
     {
         Cursor.visible = true;
         player.playerDamageAnim.SetBool("wasPlayerDamaged", false);
+        player.playerDamageAnim.enabled = false;
         player.gameObject.transform.position = transform.position;
         player.enabled = false;
         selectionScreen.SetActive(true);

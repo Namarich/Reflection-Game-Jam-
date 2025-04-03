@@ -102,7 +102,7 @@ MonoBehaviour:
   speedReduction: 0.55
   isFirstBounce: 1
   originalColor: {r: 1, g: 0, b: 0, a: 1}
-  transparentColor: {r: 0, g: 0, b: 0, a: 1}
+  transparentColor: {r: 1, g: 0, b: 0, a: 1}
   isChainReaction: 0
   explosion: {fileID: 5884457134273996261, guid: 21ff8a6cdc7ad79498309f7fb7005b94, type: 3}
   miniExplosion: {fileID: 0}
