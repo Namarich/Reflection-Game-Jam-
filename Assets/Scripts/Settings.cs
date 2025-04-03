@@ -83,7 +83,7 @@ public class Settings : MonoBehaviour
     public void GiveOutAllOfTheValues()
     {
         GameObject.FindGameObjectWithTag("WaveManager").GetComponent<WaveManager>().isCursorVisibleAlways = isCursorVisibleAlways;
-        GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().audi.volume = soundFXVolume;
+        GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().ChangeSoundFXVolume(soundFXVolume);
         GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().mainSongSource.volume = musicVolume;
         musicVolume = musicVolumeSlider.value;
         soundFXVolume = soundFXSlider.value;
