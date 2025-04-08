@@ -241,7 +241,11 @@ public class Abilities : MonoBehaviour
                 break;
         }
         GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>().PlaySound("press");
-        waveMan.EnemyInfoScreen();
+        if (!waveMan.enemyInfoScreen.activeSelf)
+        {
+            waveMan.EnemyInfoScreen();
+        }
+        
     }
 
     public void TakeRandomEnum()
