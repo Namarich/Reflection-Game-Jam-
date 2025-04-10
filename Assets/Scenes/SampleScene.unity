@@ -418,6 +418,7 @@ GameObject:
   - component: {fileID: 23272503}
   - component: {fileID: 23272505}
   - component: {fileID: 23272504}
+  - component: {fileID: 23272506}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -494,9 +495,9 @@ MonoBehaviour:
   m_fontSize: 140
   m_fontSizeBase: 140
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 140
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -541,6 +542,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 23272502}
   m_CullTransparentMesh: 1
+--- !u!114 &23272506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23272502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd4b6449d17f9f47941ae015725588b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  englishText: You Lost
+  russianText: "\u0422\u044B \u041F\u0440\u043E\u0438\u0433\u0440\u0430\u043B"
+  text: {fileID: 23272504}
 --- !u!1001 &54992163
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -975,7 +991,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8558293067188053332, guid: 2d7a24c58cc8d454592f1c666d65872f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 250
+      value: 1250
       objectReference: {fileID: 0}
     - target: {fileID: 8558293067188053332, guid: 2d7a24c58cc8d454592f1c666d65872f, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -6223,7 +6239,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8558293067188053332, guid: 2d7a24c58cc8d454592f1c666d65872f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 250
+      value: 750
       objectReference: {fileID: 0}
     - target: {fileID: 8558293067188053332, guid: 2d7a24c58cc8d454592f1c666d65872f, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -10014,6 +10030,7 @@ GameObject:
   - component: {fileID: 1848171279}
   - component: {fileID: 1848171281}
   - component: {fileID: 1848171280}
+  - component: {fileID: 1848171282}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -10139,6 +10156,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848171278}
   m_CullTransparentMesh: 1
+--- !u!114 &1848171282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848171278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd4b6449d17f9f47941ae015725588b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  englishText: Quit
+  russianText: "\u0412\u044B\u0439\u0442\u0438"
+  text: {fileID: 1848171280}
 --- !u!1001 &1891434409
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11070,6 +11102,7 @@ GameObject:
   - component: {fileID: 2091612051}
   - component: {fileID: 2091612053}
   - component: {fileID: 2091612052}
+  - component: {fileID: 2091612054}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -11193,6 +11226,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2091612050}
   m_CullTransparentMesh: 1
+--- !u!114 &2091612054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091612050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd4b6449d17f9f47941ae015725588b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  englishText: Menu
+  russianText: "\u041C\u0435\u043D\u044E"
+  text: {fileID: 2091612052}
 --- !u!1 &2093001686
 GameObject:
   m_ObjectHideFlags: 0
