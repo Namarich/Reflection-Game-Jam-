@@ -13,6 +13,7 @@ public class StatUI : MonoBehaviour
     public Stats stat;
 
     public string description;
+    public string russianDescription;
 
     public TMP_Text descriptionText;
     public TMP_Text valueText;
@@ -71,7 +72,14 @@ public class StatUI : MonoBehaviour
     public void UpdateTheUI()
     {
         valueText.text = value.ToString();
-        descriptionText.text = description; 
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            descriptionText.text = description;
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            descriptionText.text = russianDescription;
+        }
     }
 
     public void Hover()

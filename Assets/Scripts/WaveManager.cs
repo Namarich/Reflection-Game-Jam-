@@ -59,6 +59,7 @@ public class WaveManager : MonoBehaviour
 
     public bool isTutorial = true;
     public List<string> tutorials;
+    public List<string> russianTutorials;
     private int tutorialStep = 1;
     public TMP_Text tutorialText;
     public GameObject tutorialPanel;
@@ -82,7 +83,14 @@ public class WaveManager : MonoBehaviour
         lastTimeSpawned = 0;
         wave = 1;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        waveText.text = $"Wave {wave}";
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            waveText.text = $"Wave {wave}";
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            waveText.text = $"Волна {wave}";
+        }
         tutorialPanel.SetActive(true);
         if (!isCursorVisibleAlways)
         {
@@ -192,7 +200,15 @@ public class WaveManager : MonoBehaviour
         selectionScreen.SetActive(false);
         fightingScreen.SetActive(true);
         currentEnemiesSpawned = 0;
-        waveText.text = $"Wave {wave}";
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            waveText.text = $"Wave {wave}";
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            waveText.text = $"Волна {wave}";
+        }
+
         lastTimeSpawned = 0;
         IsSelectionScreen = false;
         Resources.UnloadUnusedAssets();
@@ -273,7 +289,15 @@ public class WaveManager : MonoBehaviour
 
     void Tutorial()
     {
-        tutorialText.text = tutorials[tutorialStep - 1];
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            tutorialText.text = tutorials[tutorialStep - 1];
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            tutorialText.text = russianTutorials[tutorialStep - 1];
+        }
+
 
         if (tutorialStep == 1)
         {
@@ -369,7 +393,14 @@ public class WaveManager : MonoBehaviour
         SelectionScreen();
         tutorialPanel.SetActive(false);
         fightingScreen.SetActive(false);
-        loseWaveText.text = $"wave {wave}";
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            waveText.text = $"Wave {wave}";
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            waveText.text = $"Волна {wave}";
+        }
     }
 
 }

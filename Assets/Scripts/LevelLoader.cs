@@ -11,9 +11,22 @@ public class LevelLoader : MonoBehaviour
 
     public Animator buttonAnim;
 
+    public string language = "english";
+
     // Update is called once per frame
 
-
+    public void Start()
+    {
+        if (PlayerPrefs.GetString("language") != "english" && PlayerPrefs.GetString("language") != "russian")
+        {
+            PlayerPrefs.SetString("language", "english");
+        }
+        else
+        {
+            language = PlayerPrefs.GetString("language");
+        }
+        
+    }
 
     public void LoadNextLevel(string sceneName)
     {
@@ -55,5 +68,17 @@ public class LevelLoader : MonoBehaviour
     public void Unhover()
     {
         buttonAnim.Play("ButtonBack");
+    }
+
+    public void ChangeToRussian()
+    {
+        language = "russian";
+        PlayerPrefs.SetString("language", language);
+    }
+
+    public void ChangeToEnglish()
+    {
+        language = "english";
+        PlayerPrefs.SetString("language", language);
     }
 }

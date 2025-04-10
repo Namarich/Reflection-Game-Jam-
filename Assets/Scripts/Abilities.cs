@@ -18,6 +18,8 @@ public class Abilities : MonoBehaviour
     private float effect;
     private bool isPercentageBased;
 
+    private string russianAbilityName;
+
     private float initialValue;
 
     public TMP_Text nameText;
@@ -30,6 +32,8 @@ public class Abilities : MonoBehaviour
     public List<StatUI> stats;
 
     public List<GameObject> specialAbilities;
+    public List<TMP_Text> specialAbilitiesDescriptions;
+    public List<TMP_Text> specialAbilitiesNames;
 
     private string rarity;
     public List<Color> colors;
@@ -94,6 +98,16 @@ public class Abilities : MonoBehaviour
         player.isExtraBullet = true;
         waveMan.cannotUseAbilities.Add(function.ToString());
         specialAbilities[0].SetActive(true);
+        specialAbilitiesDescriptions[0].text = effectSign;
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            specialAbilitiesNames[0].text = abilityName;
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            specialAbilitiesNames[0].text = russianAbilityName;
+        }
+
     }
 
     public void Acceleration()
@@ -101,13 +115,31 @@ public class Abilities : MonoBehaviour
         player.isDoublingSpeedBullet = true;
         waveMan.cannotUseAbilities.Add(function.ToString());
         specialAbilities[1].SetActive(true);
+        specialAbilitiesDescriptions[1].text = effectSign;
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            specialAbilitiesNames[1].text = abilityName;
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            specialAbilitiesNames[1].text = russianAbilityName;
+        }
     }
 
     public void ExplosiveImpact()
     {
         player.isExplosiveImpact = true;
         waveMan.cannotUseAbilities.Add(function.ToString());
-        specialAbilities[3].SetActive(true);
+        specialAbilities[2].SetActive(true);
+        specialAbilitiesDescriptions[2].text = effectSign;
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            specialAbilitiesNames[2].text = abilityName;
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            specialAbilitiesNames[2].text = russianAbilityName;
+        }
     }
 
 
@@ -118,6 +150,7 @@ public class Abilities : MonoBehaviour
         {
             case Function.PlayerSpeedUp:
                 abilityName = "Player SpeedUp";
+                russianAbilityName = "Увеличение скорости ходьбы";
                 effect = 2;
                 effectSign = "+";
                 isPercentageBased = false;
@@ -127,6 +160,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileSpeedUp:
                 abilityName = "Projectile SpeedUp";
+                russianAbilityName = "Увеличение скорости снаряда";
                 effect = 1.4f;
                 effectSign = "*";
                 isPercentageBased = true;
@@ -136,6 +170,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileDamageUp:
                 abilityName = "Projectile DamageUp";
+                russianAbilityName = "Увеличение урона снаряда";
                 effect = 1.35f;
                 effectSign = "*";
                 isPercentageBased = true;
@@ -145,6 +180,7 @@ public class Abilities : MonoBehaviour
 
             case Function.PlayerHealthUp:
                 abilityName = "Player HealthUp";
+                russianAbilityName = "Увеличение здоровья";
                 effect = 50;
                 effectSign = "+";
                 isPercentageBased = false;
@@ -154,6 +190,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ShotSpeedUp:
                 abilityName = "Shot SpeedUp";
+                russianAbilityName = "Увеличение скорости стрельбы";
                 effect = 1.15f;
                 effectSign = "/";
                 isPercentageBased = true;
@@ -163,6 +200,7 @@ public class Abilities : MonoBehaviour
 
             case Function.ProjectileSizeUp:
                 abilityName = "Projectile SizeUp";
+                russianAbilityName = "Увеличение размера снаряда";
                 effect = 1.15f;
                 effectSign = "*";
                 isPercentageBased = true;
@@ -172,8 +210,17 @@ public class Abilities : MonoBehaviour
 
             case Function.ExtraBullet:
                 abilityName = "Extra Bullet";
+                russianAbilityName = "Еще одна пуля";
                 effect = 0;
-                effectSign = "+ 1 bullet";
+                if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+                {
+                    effectSign = "+ 1 bullet";
+                }
+                else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+                {
+                    effectSign = "+ 1 снаряд";
+                }
+
                 isPercentageBased = false;
                 initialValue = 0;
                 rarity = "Epic";
@@ -181,8 +228,16 @@ public class Abilities : MonoBehaviour
 
             case Function.Acceleration:
                 abilityName = "Acceleration";
+                russianAbilityName = "Ускорение";
                 effect = 0;
-                effectSign = "Every 2 reflections double the move speed of a bullet";
+                if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+                {
+                    effectSign = "Every 2 reflections double the move speed of a bullet";
+                }
+                else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+                {
+                    effectSign = "После каждых 2 отражений скорость снаряда удваивается";
+                }
                 isPercentageBased = false;
                 initialValue = 0;
                 rarity = "Rare";
@@ -190,8 +245,16 @@ public class Abilities : MonoBehaviour
 
             case Function.ExplosiveImpact:
                 abilityName = "Explosive Impact";
+                russianAbilityName = "Взрывное столкновение";
                 effect = 0;
-                effectSign = "If 2 bullets collide, they produce an explosion, which deals 2x damage";
+                if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+                {
+                    effectSign = "If 2 bullets collide, they produce an explosion, which deals 2x damage";
+                }
+                else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+                {
+                    effectSign = "Если 2 снаряда сталкиваются, то они взрываются с удвоенным уроном";
+                }
                 isPercentageBased = false;
                 initialValue = 0;
                 rarity = "Epic";
@@ -246,6 +309,7 @@ public class Abilities : MonoBehaviour
 
     public void TakeRandomEnum()
     {
+        
         function = (Function)Random.Range(0, Function.GetValues(typeof(Function)).Length);
         while (waveMan.selectedAbilities.Contains(function.ToString()) || waveMan.cannotUseAbilities.Contains(function.ToString()))
         {
@@ -253,7 +317,15 @@ public class Abilities : MonoBehaviour
         }
         waveMan.selectedAbilities.Add(function.ToString());
         UpdateAbilities();
-        nameText.text = abilityName;
+        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        {
+            nameText.text = abilityName;
+        }
+        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        {
+            nameText.text = russianAbilityName;
+        }
+
         if (isPercentageBased)
         {
             if (effectSign == "/")
