@@ -65,6 +65,11 @@ public class Player : MonoBehaviour
 
     private WaveManager wav;
 
+    public bool hasRevived = false;
+    public GameObject reviveAdGameObject;
+
+    public ButtonManager buttonManager;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -98,6 +103,11 @@ public class Player : MonoBehaviour
 
         ammoUI.fillAmount = (Time.time - lastShotTime) / shotSpeed;
         FillTheHealthBar();
+
+        if (hasRevived)
+        {
+            reviveAdGameObject.SetActive(false);
+        }
     }
 
 
@@ -267,10 +277,37 @@ public class Player : MonoBehaviour
             if (currentHealth <= 0)
             {
                 playerDamageAnim.SetBool("wasPlayerDamaged", false);
-                wav.Lose();
+                buttonManager.startOfReviveAd = Time.time;
+                reviveAdGameObject.SetActive(true);
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                gameObject.GetComponent<Rigidbody2D>().isKinematic = true;
+                wav.DeleteAllEnemies();
+                wav.DeleteAllProjectiles();
+                currentHealth = 1;
+                //Invoke("Reset", durationOfReviveAd);
             }
         }
         
+    }
+
+    public void Reset()
+    {
+        if (!hasRevived)
+        {
+            wav.Lose();
+        }
+        else
+        {
+            currentHealth = maxHealth;
+            wav.NextWave();
+        }
+        hasRevived = false;
+        reviveAdGameObject.SetActive(false);
+        lastShotTime = 0f;
+        gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
+        FillTheHealthBar();
+        wav.tutorialStep = 1;
     }
 
     IEnumerator ChangeColor()

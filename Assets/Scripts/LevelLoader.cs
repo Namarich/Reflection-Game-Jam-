@@ -30,7 +30,8 @@ public class LevelLoader : MonoBehaviour
 
     public void LoadNextLevel(string sceneName)
     {
-        StartCoroutine(LoadLevel(sceneName));
+        //StartCoroutine(LoadLevel(sceneName));
+        SceneManager.LoadScene(sceneName);
     }
 
 
@@ -51,6 +52,7 @@ public class LevelLoader : MonoBehaviour
 
     public void ToTheMenu()
     {
+        YGAdsProvider.TryShowFullscreenAd(0.7f);
         LoadNextLevel("Menu");
     }
 

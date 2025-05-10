@@ -60,7 +60,7 @@ public class WaveManager : MonoBehaviour
     public bool isTutorial = true;
     public List<string> tutorials;
     public List<string> russianTutorials;
-    private int tutorialStep = 1;
+    public int tutorialStep = 1;
     public TMP_Text tutorialText;
     public GameObject tutorialPanel;
     public GameObject mirrorObject;
@@ -80,6 +80,7 @@ public class WaveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         lastTimeSpawned = 0;
         wave = 1;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
@@ -96,29 +97,38 @@ public class WaveManager : MonoBehaviour
         {
             Cursor.visible = false;
         }
-        
+
+        if (PlayerPrefs.GetString("language") == "english")
+        {
+            waveText.text = $"Wave {wave}";
+        }
+        else if (PlayerPrefs.GetString("language") == "russian")
+        {
+            waveText.text = $"Волна {wave}";
+        }
+        player.gameObject.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time >= timeBetweenSpawns + lastTimeSpawned - enemyCircleDuration && currentEnemiesSpawned < startEnemyNumber+(wave-1)*enemyNumberProgression && !selectionScreen.activeSelf && !startedSpawning && !isTutorial)
+        if (Time.time >= timeBetweenSpawns + lastTimeSpawned - enemyCircleDuration && currentEnemiesSpawned < startEnemyNumber + (wave - 1) * enemyNumberProgression && !selectionScreen.activeSelf && !startedSpawning && !isTutorial)
         {
             //Spawn(enemy);
             CanSummonEnemies();
             //int howMany = Random.Range(1, (wave / 3) + 2);
             //while (howMany+currentEnemiesSpawned > startEnemyNumber + (wave - 1) * enemyNumberProgression)
             //{
-                //howMany = Random.Range(1, (wave / 3) + 2);
+            //howMany = Random.Range(1, (wave / 3) + 2);
             //}
 
             int howMany = Random.Range(1, ((wave / 3) + 2) % (startEnemyNumber + (wave - 1) * enemyNumberProgression));
-            for (int i = 0;i < howMany; i++)
+            for (int i = 0; i < howMany; i++)
             {
                 Spawn(canSummonEnemies[Random.Range(0, canSummonEnemies.Count)]);
-            }  
+            }
         }
-        else if (currentEnemiesSpawned >= startEnemyNumber + (wave - 1) * enemyNumberProgression && enemies.Count == 0 && !IsSelectionScreen && !isTutorial)
+        else if (currentEnemiesSpawned >= startEnemyNumber + (wave - 1) * enemyNumberProgression && CountAllCurrentlyAliveEnemies() == 0 && !IsSelectionScreen && !isTutorial)
         {
             StartCoroutine(WaitUntilSelectionScreen());
         }
@@ -135,7 +145,16 @@ public class WaveManager : MonoBehaviour
         }
 
         bulletCountText.text = $"{GetComponent<ObjectPool>().HowManyInactive()}x";
-        
+
+
+        if (PlayerPrefs.GetString("language") == "english")
+        {
+            waveText.text = $"Wave {wave}";
+        }
+        else if (PlayerPrefs.GetString("language") == "russian")
+        {
+            waveText.text = $"Волна {wave}";
+        }
     }
 
 
@@ -143,23 +162,23 @@ public class WaveManager : MonoBehaviour
     {
         startedSpawning = true;
 
-        Bounds currentBounds = zones[Random.Range(0,zones.Count)].GetComponent<SpriteRenderer>().bounds;
+        Bounds currentBounds = zones[Random.Range(0, zones.Count)].GetComponent<SpriteRenderer>().bounds;
 
-        Vector2 spawnPos = RandomPointInsideBounds(currentBounds,enemy.GetComponent<SpriteRenderer>().bounds.size);
+        Vector2 spawnPos = RandomPointInsideBounds(currentBounds, enemy.GetComponent<SpriteRenderer>().bounds.size);
 
-        StartCoroutine(SpawnEnemy(spawnPos,enemy));
-        
+        StartCoroutine(SpawnEnemy(spawnPos, enemy));
+
     }
 
 
-    public Vector2 RandomPointInsideBounds(Bounds bounds,Vector3 size)
+    public Vector2 RandomPointInsideBounds(Bounds bounds, Vector3 size)
     {
         return new Vector2(Random.Range(bounds.min.x + size.x, bounds.max.x - size.x), Random.Range(bounds.min.y + size.y, bounds.max.y - size.y));
     }
 
 
 
-    IEnumerator SpawnEnemy(Vector3 spawnPos,GameObject enemy)
+    IEnumerator SpawnEnemy(Vector3 spawnPos, GameObject enemy)
     {
         //GameObject b = Instantiate(enemySpawnCircle, spawnPos, Quaternion.identity);
         GameObject b = circleSpawnController.GetPooledObject();
@@ -179,10 +198,14 @@ public class WaveManager : MonoBehaviour
         {
             b.SetActive(false);
         }
-        a.SetActive(true);
-        a.GetComponent<Enemy>().enabled = true;
-        currentEnemiesSpawned += 1;
-        lastTimeSpawned = Time.time;
+        if (a != null)
+        {
+            a.SetActive(true);
+            a.GetComponent<Enemy>().enabled = true;
+            currentEnemiesSpawned += 1;
+            lastTimeSpawned = Time.time;
+        }
+
         startedSpawning = false;
     }
 
@@ -190,6 +213,9 @@ public class WaveManager : MonoBehaviour
 
     public void NextWave()
     {
+        DeleteAllEnemies();
+        int n = CountAllCurrentlyAliveEnemies();
+        player.gameObject.SetActive(true);
         player.playerDamageAnim.enabled = true;
         if (isTutorial)
         {
@@ -216,7 +242,28 @@ public class WaveManager : MonoBehaviour
         {
             Cursor.visible = false;
         }
+        currentEnemiesSpawned = 0;
+        startedSpawning = false;
         
+
+    }
+
+    public void DeleteAllEnemies()
+    {
+        foreach (GameObject a in enemies)
+        {
+            Destroy(a);
+        }
+        enemies.RemoveAll(GameObject => !GameObject);
+    }
+
+    public void DeleteAllProjectiles()
+    {
+        ObjectPool pool = gameObject.GetComponent<ObjectPool>();
+        foreach (GameObject a in pool.pooledObjects)
+        {
+            a.SetActive(false);
+        }
     }
 
 
@@ -286,6 +333,23 @@ public class WaveManager : MonoBehaviour
         }
     }
 
+    public int CountAllCurrentlyAliveEnemies()
+    {
+        int count = 0;
+
+        foreach (GameObject a in enemies)
+        {
+            if (a != null)
+            {
+                count++;
+            }
+        }
+        enemies.RemoveAll(GameObject => !GameObject);
+        return count;
+
+        
+    }
+
 
     void Tutorial()
     {
@@ -321,17 +385,17 @@ public class WaveManager : MonoBehaviour
         if (tutorialStep == 3)
         {
             mirrorObject.SetActive(false);
-            if (enemies.Count == 0 && currentEnemiesSpawned == 0)
+            if (CountAllCurrentlyAliveEnemies() == 0 && currentEnemiesSpawned == 0)
             {
                 Spawn(enemyList[0].enemy);
                 currentEnemiesSpawned += 1;
             }
-            else if (enemies.Count == 0 && currentEnemiesSpawned > 0)
+            else if (CountAllCurrentlyAliveEnemies() == 0 && currentEnemiesSpawned > 0)
             {
                 tutorialStep += 1;
                 StartCoroutine(WaitUntilSelectionScreen());
             }
-            
+
         }
 
         if (tutorialStep == 4)
@@ -339,7 +403,7 @@ public class WaveManager : MonoBehaviour
             if (wave > 1)
             {
                 tutorialStep += 1;
-                
+
             }
         }
 
@@ -373,13 +437,13 @@ public class WaveManager : MonoBehaviour
     public GameObject GetARandomEnemy(GameObject exceptThisOne)
     {
         GameObject a = enemies[0];
-        if (enemies.Count > 1)
+        if (CountAllCurrentlyAliveEnemies() > 1)
         {
             while (a == exceptThisOne || !a.activeInHierarchy || !a.GetComponent<Enemy>().canMove)
             {
                 a = enemies[Random.Range(0, enemies.Count)];
             }
-            
+
         }
         return a;
     }
@@ -393,14 +457,24 @@ public class WaveManager : MonoBehaviour
         SelectionScreen();
         tutorialPanel.SetActive(false);
         fightingScreen.SetActive(false);
-        if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "english")
+        if (PlayerPrefs.GetString("language") == "english")
         {
-            waveText.text = $"Wave {wave}";
+            loseWaveText.text = $"Wave {wave}";
         }
-        else if (GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language == "russian")
+        else if (PlayerPrefs.GetString("language") == "russian")
         {
-            waveText.text = $"Волна {wave}";
+            loseWaveText.text = $"Волна {wave}";
         }
+        Debug.Log($"{PlayerPrefs.GetString("language")};{GameObject.FindGameObjectWithTag("LevelLoader").GetComponent<LevelLoader>().language}");
+        //player.gameObject.SetActive(false);
+        CanSummonEnemies();
+        foreach (GameObject a in enemies)
+        {
+            Destroy(a);
+        }
+
+        currentEnemiesSpawned = 0;
+        
     }
 
 }
